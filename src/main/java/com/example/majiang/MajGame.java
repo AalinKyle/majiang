@@ -5,14 +5,15 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
 @Slf4j
 public class MajGame {
     private MajTable table;
     private List<HuValid> valids;
-    private Map<Fan, List<HuMaj>> record = new HashMap<>();
-    private int gameNum = 0;
+    private static Map<Fan, List<HuMaj>> record = new HashMap<>();
+    private static AtomicInteger gameNum = new AtomicInteger(0);
 
     public MajGame(List<HuValid> valids) {
         this.valids = valids;
@@ -23,7 +24,7 @@ public class MajGame {
     }
 
     public void play(List<Player<Maj>> players) {
-        gameNum++;
+        gameNum.incrementAndGet();
         table = new MajTable();
         table.shuffle();
         table.addPlayers(players);
@@ -38,7 +39,7 @@ public class MajGame {
             player.touch(table.touch());
             huRecord = validFan(player);
             if (huRecord != null) {
-                log.info("第{}局{}手，自摸胡=>{},番数=>{}", gameNum, shou, huRecord.getHuMaj(), huRecord.getFans());
+                log.info("第{}局{}手，自摸胡=>{},番数=>{}", gameNum.get(), shou, huRecord.getHuMaj(), huRecord.getFans());
                 rec(huRecord);
                 return;
             }
@@ -47,7 +48,7 @@ public class MajGame {
                 if (p != player) {
                     huRecord = validFan(p, current);
                     if (huRecord != null) {
-                        log.info("第{}局{}手,放炮胡=>{},番数=>{}", gameNum, shou, huRecord.getHuMaj(), huRecord.getFans());
+                        log.info("第{}局{}手,放炮胡=>{},番数=>{}", gameNum.get(), shou, huRecord.getHuMaj(), huRecord.getFans());
                         rec(huRecord);
                         return;
                     }
@@ -68,11 +69,15 @@ public class MajGame {
     }
 
     public static void main(String[] args) {
-        MajGame game = new MajGame(getHus());
-        while (true) {
-            List<Player<Maj>> players = findPlayer();
-            game.play(players);
-            game.clear();
+        for (int i = 0; i < 5; i++) {
+            new Thread(() -> {
+                MajGame game = new MajGame(getHus());
+                while (true) {
+                    List<Player<Maj>> players = findPlayer();
+                    game.play(players);
+                    game.clear();
+                }
+            }).start();
         }
     }
 

@@ -11,7 +11,7 @@ public class Maj {
     private int type;
     private int content;
 
-    public static final String[] zi = new String[]{"白", "发", "中", "东", "南", "西", "北"};
+    public static final String[] zi = new String[]{"东", "南", "西", "北", "白", "发", "中"};
     public static final String[] types = new String[]{"万", "筒", "索", "字"};
     public static final String[] contents = new String[]{"一", "二", "三", "四", "五", "六", "七", "八", "九"};
 
