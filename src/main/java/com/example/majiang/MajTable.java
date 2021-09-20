@@ -1,5 +1,6 @@
 package com.example.majiang;
 
+import com.example.majiang.p.Player;
 import lombok.Data;
 
 import java.util.*;

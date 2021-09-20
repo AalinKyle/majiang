@@ -1,18 +1,25 @@
-package com.example.majiang;
+package com.example.majiang.p;
 
+import com.example.majiang.Maj;
+import com.example.majiang.MajGroup;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
 @Slf4j
 @NoArgsConstructor
 public class Player<T extends Maj> {
+
+    protected AtomicInteger point = new AtomicInteger();
+
+    public void addPoint(int n) {
+        point.addAndGet(n);
+    }
+
     private String name;
     private boolean enableLog;
     private List<T> hand;
@@ -20,6 +27,10 @@ public class Player<T extends Maj> {
     private List<T> discard;
 
     private Comparator<T> sort;
+
+    public List<T> getHand() {
+        return hand;
+    }
 
     public Player(String name, Comparator<T> sort, boolean enableLog) {
         this.name = name;
@@ -51,14 +62,33 @@ public class Player<T extends Maj> {
         info("{}=>打出了{}", name, play);
         return play;
     }
+//    public T play() {
+//        for (int i = 0; i < hand.size(); i++) {
+//            T t = hand.get(i);
+//            if (t.getType() == 3) {
+//                return hand.remove(i);
+//            }
+//            if (t.getContent() == 0 || t.getContent() == 8) return hand.remove(i);
+//        }
+//        T play = hand.remove(random.nextInt(hand.size()));
+//        info("{}=>打出了{}", name, play);
+//        return play;
+//    }
+
 
     public void addDiscard(T t) {
         discard.add(t);
     }
 
-    private void info(String str, Object... arg) {
+    protected void info(String str, Object... arg) {
         if (enableLog) {
             log.info(str, arg);
         }
+    }
+
+    public void over() {
+        hand = new LinkedList<>();
+        show = new LinkedList<>();
+        discard = new LinkedList<>();
     }
 }

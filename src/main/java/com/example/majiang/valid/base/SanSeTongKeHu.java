@@ -14,8 +14,9 @@ public class SanSeTongKeHu extends BaseHuValid {
         tmp.addAll(show);
         tmp.addAll(list);
         List<MajGroup> ke = new ArrayList<>();
-        for (MajGroup majGroup : tmp) {
-            if (majGroup.getType() == MajGroup.MING_KE || majGroup.getType() == MajGroup.AN_KE) ke.add(majGroup);
+        for (MajGroup majGroup : tmp) {//字牌没有同刻
+            if ((majGroup.getType() == MajGroup.MING_KE || majGroup.getType() == MajGroup.AN_KE) && majGroup.getMajs().get(0).getType() != 3)
+                ke.add(majGroup);
         }
         if (ke.size() < 3) return null;
 

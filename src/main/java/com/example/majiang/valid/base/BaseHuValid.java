@@ -29,8 +29,12 @@ public abstract class BaseHuValid implements HuValid {
     @Override
     public Fan valid0(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard) {
         List<MajGroup> list = new LinkedList<>();
-        if (baseHu(copy(wan), copy(tong), copy(suo), copy(zi), show, discard,list)) {
-            return valid(copy(wan), copy(tong), copy(suo), copy(zi), show, discard,list);
+        int[] cw = copy(wan);
+        int[] ct = copy(tong);
+        int[] cs = copy(suo);
+        int[] cz = copy(zi);
+        if (baseHu(cw, ct, cs, cz, show, discard, list)) {
+            return valid(wan, tong, suo, zi, show, discard, list);
         }
         return null;
     }
@@ -128,5 +132,5 @@ public abstract class BaseHuValid implements HuValid {
         private int qt;
     }
 
-    public abstract Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard,List<MajGroup> list);
+    public abstract Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list);
 }
