@@ -1,6 +1,8 @@
 package com.example.majiang;
 
 import com.example.majiang.p.Player;
+import com.example.majiang.point.CalPointHandler;
+import com.example.majiang.point.DefaultCalPointHandler;
 import com.example.majiang.valid.HuValid;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class MajGame {
     private int dealer;
     private int changFen = 0;
     private Hus hus;
+    private CalPointHandler pointHandler = new DefaultCalPointHandler();
 
     public MajGame(Hus hus) {
         this.hus = hus;
@@ -76,7 +79,7 @@ public class MajGame {
                 huRecord = validFan(player, new GameInfo(changFen, calZiFeng(player), baoPai));
                 if (huRecord != null && huRecord.isHu()) {
                     log.info("第{}局{}手,{} 自摸胡=>{},番数=>{}", gameNum.get(), shou, player.getName(), huRecord.getHuMaj(), huRecord.getFans());
-                    checkZiMoPoint(player, players, huRecord.getFans());
+                    pointHandler.checkZiMoPoint(player, players, huRecord.getFans());
                     winnerNo = tmpInfos.get(player.getName()).getPlayerNo();
                     rec(huRecord);
                     break;
@@ -90,7 +93,7 @@ public class MajGame {
                     huRecord = validFan(p, current, new GameInfo(changFen, calZiFeng(p), baoPai));
                     if (huRecord != null && huRecord.isHu()) {
                         log.info("第{}局{}手,{} 胡 {} 放炮=>{},番数=>{}", gameNum.get(), shou, p.getName(), player.getName(), huRecord.getHuMaj(), huRecord.getFans());
-                        checkFangPaoPoint(p, player, huRecord.getFans());
+                        pointHandler. checkFangPaoPoint(p, player, huRecord.getFans());
                         rec(huRecord);
                         winnerNo = tmpInfos.get(p.getName()).getPlayerNo();
                         break;
@@ -123,30 +126,6 @@ public class MajGame {
         if (gameTmp == null) throw new NullPointerException();
         int playerNo = gameTmp.getPlayerNo();
         return (playerNo + 4 - dealer) % 4;//0 3 1
-    }
-
-    private void checkZiMoPoint(Player<Maj> get, List<Player<Maj>> all, List<Fan> fans) {
-        int fanNum = sumFan(fans);
-        get.addPoint(fanNum * 1000);
-        for (int i = 0; i < all.size(); i++) {
-            Player<Maj> p = all.get(i);
-            if (p != get)
-                p.addPoint(-fanNum * 1000 / 3);
-        }
-    }
-
-    private void checkFangPaoPoint(Player<Maj> get, Player<Maj> lost, List<Fan> fans) {
-        int fanNum = sumFan(fans);
-        get.addPoint(fanNum * 1000);
-        lost.addPoint(-fanNum * 1000);
-    }
-
-    private int sumFan(List<Fan> list) {
-        int sum = 0;
-        for (Fan f : list) {
-            sum += f.getNum();
-        }
-        return sum;
     }
 
 
@@ -188,10 +167,9 @@ public class MajGame {
         for (HuValid v : valids) {
             HandMajDistribution distribution = new HandMajDistribution(majs);
             Fan fan = v.valid0(distribution, show, discard, gameInfo);
-
             if (fan != null) {
                 fans.add(fan);
-                if (!fan.getType().equals("宝牌")) hu = true;
+                if (!"宝牌".equals(fan.getType())) hu = true;
             }
         }
         if (fans.size() > 0) {
