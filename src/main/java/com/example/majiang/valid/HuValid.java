@@ -5,7 +5,7 @@ import com.example.majiang.*;
 import java.util.List;
 
 public interface HuValid {
-    Fan valid0(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard);
+    Fan valid0(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, GameInfo gameInfo);
 
     default boolean v(int[] arr, int num) {
         return sum(arr) == num;

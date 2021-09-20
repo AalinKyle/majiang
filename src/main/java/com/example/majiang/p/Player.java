@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @NoArgsConstructor
 public class Player<T extends Maj> {
 
+
     protected AtomicInteger point = new AtomicInteger();
 
     public void addPoint(int n) {

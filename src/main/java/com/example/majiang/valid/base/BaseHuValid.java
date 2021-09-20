@@ -1,9 +1,6 @@
 package com.example.majiang.valid.base;
 
-import com.example.majiang.Fan;
-import com.example.majiang.Maj;
-import com.example.majiang.MajGroup;
-import com.example.majiang.ShowEswnzfbx;
+import com.example.majiang.*;
 import com.example.majiang.valid.HuValid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,23 +15,24 @@ public abstract class BaseHuValid implements HuValid {
     /**
      * 实现//a*AAA+b*ABC+DD 基本胡型 七小对，十三幺不算
      *
-     * @param wan
-     * @param tong
-     * @param suo
-     * @param zi
      * @param show
      * @param discard
      * @return
      */
     @Override
-    public Fan valid0(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard) {
+    public Fan valid0(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, GameInfo gameInfo) {
         List<MajGroup> list = new LinkedList<>();
+
+        int[] wan = hmd.getWan();
+        int[] suo = hmd.getSuo();
+        int[] tong = hmd.getTong();
+        int[] zi = hmd.getZi();
         int[] cw = copy(wan);
         int[] ct = copy(tong);
         int[] cs = copy(suo);
         int[] cz = copy(zi);
-        if (baseHu(cw, ct, cs, cz, show, discard, list)) {
-            return valid(wan, tong, suo, zi, show, discard, list);
+        if (baseHu(cw, ct, cs, cz, show, discard, list, gameInfo)) {
+            return valid(hmd, show, discard, list, gameInfo);
         }
         return null;
     }
@@ -43,7 +41,7 @@ public abstract class BaseHuValid implements HuValid {
         return Arrays.copyOf(arr, arr.length);
     }
 
-    private boolean baseHu(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list) {
+    private boolean baseHu(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
         ShowEswnzfbx eswnzfbx = parseShow(show);
         int sunzi = eswnzfbx.getSuoShunZi();
         int ke = eswnzfbx.getMingKeNum();
@@ -132,5 +130,5 @@ public abstract class BaseHuValid implements HuValid {
         private int qt;
     }
 
-    public abstract Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list);
+    public abstract Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo);
 }

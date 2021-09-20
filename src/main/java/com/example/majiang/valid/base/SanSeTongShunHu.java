@@ -1,15 +1,13 @@
 package com.example.majiang.valid.base;
 
-import com.example.majiang.Fan;
-import com.example.majiang.Maj;
-import com.example.majiang.MajGroup;
+import com.example.majiang.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SanSeTongShunHu extends BaseHuValid {
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list) {
+    public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
         List<MajGroup> tmp = new ArrayList<>();
         tmp.addAll(show);
         tmp.addAll(list);

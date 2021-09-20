@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Fan {
+    public final static Fan YI_HU = new Fan(1, "役牌");
+    public final static Fan CHANG_FENG_HU = new Fan(1, "场风牌");
+    public final static Fan ZI_FENG_HU = new Fan(1, "自风牌");
     public final static Fan PI_HU = new Fan(1, "屁胡");
     public final static Fan DUAN_YAO_JIU = new Fan(1, "断幺九");
     public final static Fan HUN_QUAN_DAI_YAO_JIU = new Fan(2, "混全带幺九");

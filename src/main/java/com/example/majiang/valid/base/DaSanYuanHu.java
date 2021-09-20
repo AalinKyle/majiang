@@ -1,16 +1,14 @@
 package com.example.majiang.valid.base;
 
-import com.example.majiang.Fan;
-import com.example.majiang.Maj;
-import com.example.majiang.MajGroup;
-import com.example.majiang.ShowEswnzfbx;
+import com.example.majiang.*;
 
 import java.util.List;
 
 public class DaSanYuanHu extends BaseHuValid {
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard,List<MajGroup> list) {
+    public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
         int res = 0;
+        int[] zi = hmd.getZi();
         if (zi[4] == 3) res++;
         if (zi[5] == 3) res++;
         if (zi[6] == 3) res++;

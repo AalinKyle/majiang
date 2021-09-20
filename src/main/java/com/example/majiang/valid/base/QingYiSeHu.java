@@ -10,16 +10,16 @@ public class QingYiSeHu extends BaseHuValid {
     /**
      * 不判断全是字的，全是字是字一色
      *
-     * @param wan
-     * @param tong
-     * @param suo
-     * @param zi
      * @param show
      * @param discard
      * @return
      */
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list) {
+    public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
+        int[] wan = hmd.getWan();
+        int[] suo = hmd.getSuo();
+        int[] tong = hmd.getTong();
+        int[] zi = hmd.getZi();
         ShowEswnzfbx eswnzfbx = parseShow(show);
         boolean haveZi = false;
         if (eswnzfbx.getFengAnGang() > 0 || eswnzfbx.getFengMingGang() > 0 || eswnzfbx.getFengMingKe() > 0 || eswnzfbx.getYiAnGang() > 0 || eswnzfbx.getYiMingGang() > 0 || eswnzfbx.getYiMingKe() > 0) {

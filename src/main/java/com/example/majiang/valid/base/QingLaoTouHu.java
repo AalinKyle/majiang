@@ -1,14 +1,16 @@
 package com.example.majiang.valid.base;
 
-import com.example.majiang.Fan;
-import com.example.majiang.Maj;
-import com.example.majiang.MajGroup;
+import com.example.majiang.*;
 
 import java.util.List;
 
 public class QingLaoTouHu extends BaseHuValid {
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list) {
+    public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
+        int[] wan = hmd.getWan();
+        int[] suo = hmd.getSuo();
+        int[] tong = hmd.getTong();
+        int[] zi = hmd.getZi();
         for (int i = 1; i < wan.length - 1; i++) {
             if (wan[i] > 0 || tong[i] > 0 || suo[i] > 0 || zi[i] > 0) return null;
         }

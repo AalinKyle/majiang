@@ -4,12 +4,13 @@ import com.example.majiang.*;
 
 import java.util.List;
 
-public class PiHu extends BaseHuValid {
-
+public class ZiFengHu extends BaseHuValid {
     @Override
     public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
-        return Fan.PI_HU;
+        int ziFeng = gameInfo.getZiFeng();
+        int[] zi = hmd.getZi();
+        if (zi[ziFeng] == 4) {
+            return Fan.ZI_FENG_HU;
+        } else return null;
     }
-
-
 }
