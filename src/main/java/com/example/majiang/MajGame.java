@@ -13,9 +13,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MajGame {
     private MajTable table;
     private List<HuValid> valids;
-    private static Map<Fan, List<HuMaj>> record = new HashMap<>();
+    private static Map<String, List<HuMaj>> record = new HashMap<>();
     public static AtomicInteger gameNum = new AtomicInteger(0);
     private Map<String, GameTmp> tmpInfos;
+    private List<Maj> baoPai;
     /**
      * playerNo 为dealer 的人就是庄家 也就是东
      */
@@ -58,6 +59,7 @@ public class MajGame {
             table = new MajTable();
             table.shuffle();
             table.addPlayers(players);
+            baoPai = new ArrayList<>();
             initTmpInfos(players);
             table.deal();
             int no = dealer;
@@ -65,12 +67,14 @@ public class MajGame {
             Maj current;
             int shou = 0;
             Integer winnerNo = null;
+
+            baoPai.add(touchBaoPai());
             while (table.canTouch()) {
                 shou++;
                 Player<Maj> player = players.get(no % players.size());
                 player.touch(table.touch());
-                huRecord = validFan(player, new GameInfo(changFen, calZiFeng(player)));
-                if (huRecord != null) {
+                huRecord = validFan(player, new GameInfo(changFen, calZiFeng(player), baoPai));
+                if (huRecord != null && huRecord.isHu()) {
                     log.info("第{}局{}手,{} 自摸胡=>{},番数=>{}", gameNum.get(), shou, player.getName(), huRecord.getHuMaj(), huRecord.getFans());
                     checkZiMoPoint(player, players, huRecord.getFans());
                     winnerNo = tmpInfos.get(player.getName()).getPlayerNo();
@@ -83,8 +87,8 @@ public class MajGame {
                      * 按顺序
                      */
                     Player<Maj> p = players.get((no + i) % players.size());
-                    huRecord = validFan(p, current, new GameInfo(changFen, calZiFeng(p)));
-                    if (huRecord != null) {
+                    huRecord = validFan(p, current, new GameInfo(changFen, calZiFeng(p), baoPai));
+                    if (huRecord != null && huRecord.isHu()) {
                         log.info("第{}局{}手,{} 胡 {} 放炮=>{},番数=>{}", gameNum.get(), shou, p.getName(), player.getName(), huRecord.getHuMaj(), huRecord.getFans());
                         checkFangPaoPoint(p, player, huRecord.getFans());
                         rec(huRecord);
@@ -100,6 +104,17 @@ public class MajGame {
             for (Player<Maj> player : players) {
                 player.over();
             }
+        }
+    }
+
+    private Maj touchBaoPai() {
+        Maj touch = table.touch();
+        int type = touch.getType();
+        int content = touch.getContent();
+        if (type == 3) {
+            return new Maj(type, (content + 1) % 7);
+        } else {
+            return new Maj(type, (content + 1) % 9);
         }
     }
 
@@ -137,9 +152,9 @@ public class MajGame {
 
     private void rec(HuRecord huRecord) {
         for (Fan fan : huRecord.getFans()) {
-            List<HuMaj> list = record.getOrDefault(fan, new ArrayList<>());
+            List<HuMaj> list = record.getOrDefault(fan.getType(), new ArrayList<>());
             list.add(huRecord.getHuMaj());
-            record.put(fan, list);
+            record.put(fan.getType(), list);
         }
     }
 
@@ -169,15 +184,18 @@ public class MajGame {
 
     private HuRecord validFan(List<Maj> majs, List<MajGroup> show, List<Maj> discard, GameInfo gameInfo) {
         List<Fan> fans = new ArrayList<>();
+        boolean hu = false;
         for (HuValid v : valids) {
             HandMajDistribution distribution = new HandMajDistribution(majs);
             Fan fan = v.valid0(distribution, show, discard, gameInfo);
+
             if (fan != null) {
                 fans.add(fan);
+                if (!fan.getType().equals("宝牌")) hu = true;
             }
         }
         if (fans.size() > 0) {
-            return new HuRecord(new Date(), fans, new HuMaj(majs, show));
+            return new HuRecord(hu, new Date(), fans, new HuMaj(majs, show));
         } else return null;
     }
 }

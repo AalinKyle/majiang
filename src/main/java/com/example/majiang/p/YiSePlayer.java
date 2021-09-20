@@ -2,6 +2,7 @@ package com.example.majiang.p;
 
 import com.example.majiang.HandMajDistribution;
 import com.example.majiang.Maj;
+import com.example.majiang.User;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -14,12 +15,12 @@ public class YiSePlayer extends Player<Maj> {
     public YiSePlayer() {
     }
 
-    public YiSePlayer(String name, Comparator<Maj> sort, boolean enableLog) {
-        super(name, sort, enableLog);
+    public YiSePlayer(User user, Comparator<Maj> sort, boolean enableLog) {
+        super(user, sort, enableLog);
     }
 
-    public YiSePlayer(String name, Comparator<Maj> sort) {
-        super(name, sort);
+    public YiSePlayer(User user, Comparator<Maj> sort) {
+        super(user, sort);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class YiSePlayer extends Player<Maj> {
         } else if (sz < ss && sz < sw) {
         } else {
 
-        }
+        }//todo
 
         return super.play();
     }

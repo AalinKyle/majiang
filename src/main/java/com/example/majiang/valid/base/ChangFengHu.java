@@ -7,10 +7,10 @@ import java.util.List;
 public class ChangFengHu extends BaseHuValid {
     @Override
     public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
-        int ziFeng = gameInfo.getChangFeng();
+        int CHANGFeng = gameInfo.getChangFeng();
         int[] zi = hmd.getZi();
-        if (zi[ziFeng] == 4) {
-            return Fan.ZI_FENG_HU;
+        if (zi[CHANGFeng] == 3) {
+            return Fan.CHANG_FENG_HU;
         } else return null;
     }
 }

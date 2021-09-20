@@ -1,6 +1,7 @@
 package com.example.majiang.p;
 
 import com.example.majiang.Maj;
+import com.example.majiang.User;
 
 import java.util.Comparator;
 import java.util.List;
@@ -10,12 +11,12 @@ public class RemoveYaoJiuPlayer extends Player<Maj> {
     public RemoveYaoJiuPlayer() {
     }
 
-    public RemoveYaoJiuPlayer(String name, Comparator<Maj> sort, boolean enableLog) {
-        super(name, sort, enableLog);
+    public RemoveYaoJiuPlayer(User user, Comparator<Maj> sort, boolean enableLog) {
+        super(user, sort, enableLog);
     }
 
-    public RemoveYaoJiuPlayer(String name, Comparator<Maj> sort) {
-        super(name, sort);
+    public RemoveYaoJiuPlayer(User user, Comparator<Maj> sort) {
+        super(user, sort);
     }
 
     @Override

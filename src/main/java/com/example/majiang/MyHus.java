@@ -12,6 +12,7 @@ public class MyHus implements Hus {
     @Override
     public List<HuValid> getHus() {
         List<HuValid> huValids = new ArrayList<>();
+        huValids.add(new BaoPaiHu());
         huValids.add(new BaiHu());
         huValids.add(new FaHu());
         huValids.add(new ZhongHu());

@@ -9,7 +9,7 @@ public class ZiFengHu extends BaseHuValid {
     public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
         int ziFeng = gameInfo.getZiFeng();
         int[] zi = hmd.getZi();
-        if (zi[ziFeng] == 4) {
+        if (zi[ziFeng] == 3) {
             return Fan.ZI_FENG_HU;
         } else return null;
     }

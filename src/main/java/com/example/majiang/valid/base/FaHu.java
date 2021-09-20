@@ -8,8 +8,18 @@ public class FaHu extends BaseHuValid {
     @Override
     public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
         int[] zi = hmd.getZi();
-        if (zi[4] == 5) {
+        if (zi[5] == 3) {
             return Fan.YI_HU;
-        } else return null;
+        } else {
+            for (MajGroup majGroup : show) {
+                int type = majGroup.getType();
+                if (type == MajGroup.MING_KE || type == MajGroup.AN_GANG || type == MajGroup.MING_GANG) {
+                    List<Maj> majs = majGroup.getMajs();
+                    Maj maj = majs.get(0);
+                    if (maj.getType() == 3 && maj.getContent() == 5) return Fan.YI_HU;
+                }
+            }
+        }
+        return null;
     }
 }

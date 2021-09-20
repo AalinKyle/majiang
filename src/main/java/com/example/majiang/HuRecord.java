@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HuRecord {
+    private boolean hu;
     private Date huTime;
     private List<Fan> fans;
     private HuMaj huMaj;

@@ -2,12 +2,15 @@ package com.example.majiang.p;
 
 import com.example.majiang.Maj;
 import com.example.majiang.MajGroup;
+import com.example.majiang.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 @Data
 @Slf4j
@@ -15,10 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Player<T extends Maj> {
 
 
-    protected AtomicInteger point = new AtomicInteger();
+    private User user;
 
     public void addPoint(int n) {
-        point.addAndGet(n);
+        user.getPoint().addAndGet(n);
     }
 
     private String name;
@@ -33,17 +36,18 @@ public class Player<T extends Maj> {
         return hand;
     }
 
-    public Player(String name, Comparator<T> sort, boolean enableLog) {
-        this.name = name;
+    public Player(User user, Comparator<T> sort, boolean enableLog) {
+        this.name = user.getName();
         hand = new LinkedList<>();
         show = new LinkedList<>();
         discard = new LinkedList<>();
         this.sort = sort;
         this.enableLog = enableLog;
+        this.user = user;
     }
 
-    public Player(String name, Comparator<T> sort) {
-        this(name, sort, false);
+    public Player(User user, Comparator<T> sort) {
+        this(user, sort, false);
     }
 
     public void touch(T maj) {

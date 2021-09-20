@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameInfo {
-
     /**
      * 场风
      */
@@ -17,5 +18,7 @@ public class GameInfo {
      * 自风
      */
     private int ziFeng;
+
+    private List<Maj> baoPai;
 
 }

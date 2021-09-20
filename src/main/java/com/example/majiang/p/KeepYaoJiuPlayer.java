@@ -1,6 +1,7 @@
 package com.example.majiang.p;
 
 import com.example.majiang.Maj;
+import com.example.majiang.User;
 
 import java.util.Comparator;
 import java.util.List;
@@ -9,12 +10,12 @@ public class KeepYaoJiuPlayer extends Player<Maj> {
     public KeepYaoJiuPlayer() {
     }
 
-    public KeepYaoJiuPlayer(String name, Comparator<Maj> sort, boolean enableLog) {
-        super(name, sort, enableLog);
+    public KeepYaoJiuPlayer(User user, Comparator<Maj> sort, boolean enableLog) {
+        super(user, sort, enableLog);
     }
 
-    public KeepYaoJiuPlayer(String name, Comparator<Maj> sort) {
-        super(name, sort);
+    public KeepYaoJiuPlayer(User user, Comparator<Maj> sort) {
+        super(user, sort);
     }
 
     @Override
