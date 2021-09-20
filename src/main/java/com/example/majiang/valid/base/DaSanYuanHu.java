@@ -1,4 +1,4 @@
-package com.example.majiang.valid;
+package com.example.majiang.valid.base;
 
 import com.example.majiang.Fan;
 import com.example.majiang.Maj;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DaSanYuanHu extends BaseHuValid {
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard) {
+    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard,List<MajGroup> list) {
         int res = 0;
         if (zi[4] == 3) res++;
         if (zi[5] == 3) res++;

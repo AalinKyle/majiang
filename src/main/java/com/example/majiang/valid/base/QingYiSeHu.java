@@ -1,4 +1,4 @@
-package com.example.majiang.valid;
+package com.example.majiang.valid.base;
 
 import com.example.majiang.*;
 
@@ -19,7 +19,7 @@ public class QingYiSeHu extends BaseHuValid {
      * @return
      */
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard) {
+    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard, List<MajGroup> list) {
         ShowEswnzfbx eswnzfbx = parseShow(show);
         boolean haveZi = false;
         if (eswnzfbx.getFengAnGang() > 0 || eswnzfbx.getFengMingGang() > 0 || eswnzfbx.getFengMingKe() > 0 || eswnzfbx.getYiAnGang() > 0 || eswnzfbx.getYiMingGang() > 0 || eswnzfbx.getYiMingKe() > 0) {

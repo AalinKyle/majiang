@@ -1,6 +1,5 @@
 package com.example.majiang;
 
-import com.example.majiang.valid.HuValid;
 import lombok.Data;
 
 import java.util.*;

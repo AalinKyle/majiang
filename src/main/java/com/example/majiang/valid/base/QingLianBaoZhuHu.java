@@ -1,4 +1,4 @@
-package com.example.majiang.valid;
+package com.example.majiang.valid.base;
 
 import com.example.majiang.Fan;
 import com.example.majiang.Maj;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public class QingLianBaoZhuHu extends BaseHuValid {
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard) {
+    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard,List<MajGroup> list) {
         return check(wan) || check(tong) || check(suo) ? Fan.QING_LIAN_BAO_ZHU : null;
     }
 

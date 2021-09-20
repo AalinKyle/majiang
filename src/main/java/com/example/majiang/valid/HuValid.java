@@ -19,6 +19,13 @@ public interface HuValid {
         return sum;
     }
 
+    default boolean allSame(int[] arr, int target) {
+        for (int i : arr) {
+            if (i != target) return false;
+        }
+        return true;
+    }
+
     default ShowEswnzfbx parseShow(List<MajGroup> groups) {
         ShowEswnzfbx.ShowEswnzfbxBuilder builder = ShowEswnzfbx.builder();
         builder.groupNum(groups.size());
@@ -47,7 +54,7 @@ public interface HuValid {
             for (MajGroup group : groups) {
                 Maj maj = group.getMajs().get(0);
                 switch (group.getType()) {
-                    case MajGroup.SHUNZI: {
+                    case MajGroup.SHUN_ZI: {
                         if (maj.getType() == 0) {
                             wanShunZi++;
                         }
@@ -97,7 +104,7 @@ public interface HuValid {
                         }
                         break;
                     }
-                    case MajGroup.MING_GUANG: {
+                    case MajGroup.MING_GANG: {
                         if (maj.getType() == 0) {
                             wanMingGang++;
                         }

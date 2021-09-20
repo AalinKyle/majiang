@@ -1,4 +1,4 @@
-package com.example.majiang.valid;
+package com.example.majiang.valid.spc;
 
 import com.example.majiang.Fan;
 import com.example.majiang.Maj;

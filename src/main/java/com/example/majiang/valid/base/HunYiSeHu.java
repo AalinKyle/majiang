@@ -1,4 +1,4 @@
-package com.example.majiang.valid;
+package com.example.majiang.valid.base;
 
 import com.example.majiang.Fan;
 import com.example.majiang.Maj;
@@ -10,7 +10,7 @@ import java.util.List;
 public class HunYiSeHu extends BaseHuValid {
 
     @Override
-    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard) {
+    public Fan valid(int[] wan, int[] tong, int[] suo, int[] zi, List<MajGroup> show, List<Maj> discard,List<MajGroup> list) {
         ShowEswnzfbx eswnzfbx = parseShow(show);
         boolean haveZi = (eswnzfbx.getZi() > 0) || sum(zi) > 0;
         boolean haveWan = sum(wan) > 0 || eswnzfbx.getWan() > 0;

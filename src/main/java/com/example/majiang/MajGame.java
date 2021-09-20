@@ -1,6 +1,9 @@
 package com.example.majiang;
 
-import com.example.majiang.valid.*;
+import com.example.majiang.valid.HuValid;
+import com.example.majiang.valid.base.*;
+import com.example.majiang.valid.spc.QiXiaoDuiHu;
+import com.example.majiang.valid.spc.ShiSanYaoHu;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,26 +38,28 @@ public class MajGame {
         int shou = 0;
         while (table.canTouch()) {
             shou++;
-            Player<Maj> player = players.get(no++ % players.size());
+            Player<Maj> player = players.get(no % players.size());
             player.touch(table.touch());
             huRecord = validFan(player);
             if (huRecord != null) {
-                log.info("第{}局{}手，自摸胡=>{},番数=>{}", gameNum.get(), shou, huRecord.getHuMaj(), huRecord.getFans());
+                log.info("第{}局{}手,自摸胡=>{},番数=>{}", gameNum.get(), shou, huRecord.getHuMaj(), huRecord.getFans());
                 rec(huRecord);
                 return;
             }
             current = player.play();
-            for (Player<Maj> p : players) {
-                if (p != player) {
-                    huRecord = validFan(p, current);
-                    if (huRecord != null) {
-                        log.info("第{}局{}手,放炮胡=>{},番数=>{}", gameNum.get(), shou, huRecord.getHuMaj(), huRecord.getFans());
-                        rec(huRecord);
-                        return;
-                    }
+            for (int i = 1; i < 4; i++) {
+                /**
+                 * 按顺序
+                 */
+                Player<Maj> p = players.get((no + i) % players.size());
+                huRecord = validFan(p, current);
+                if (huRecord != null) {
+                    log.info("第{}局{}手,放炮胡=>{},番数=>{}", gameNum.get(), shou, huRecord.getHuMaj(), huRecord.getFans());
+                    rec(huRecord);
+                    return;
                 }
             }
-
+            no++;
         }
 
     }
@@ -69,7 +74,7 @@ public class MajGame {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             new Thread(() -> {
                 MajGame game = new MajGame(getHus());
                 while (true) {
@@ -83,10 +88,10 @@ public class MajGame {
 
     private static List<Player<Maj>> findPlayer() {
         List<Player<Maj>> players = new ArrayList<>();
-        Player<Maj> a = new Player<Maj>(new MajSort());
-        Player<Maj> b = new Player<Maj>(new MajSort());
-        Player<Maj> c = new Player<Maj>(new MajSort());
-        Player<Maj> d = new Player<Maj>(new MajSort());
+        Player<Maj> a = new Player<Maj>("东", new MajSort());
+        Player<Maj> b = new Player<Maj>("南", new MajSort());
+        Player<Maj> c = new Player<Maj>("西", new MajSort());
+        Player<Maj> d = new Player<Maj>("北", new MajSort());
         players.add(a);
         players.add(b);
         players.add(c);
@@ -96,7 +101,14 @@ public class MajGame {
 
     private static List<HuValid> getHus() {
         List<HuValid> huValids = new ArrayList<>();
-        huValids.add(new PiHu());
+        huValids.add(new DuanYaoJiuHu());
+        huValids.add(new HunQuanDaiYaoJiuHu());
+        huValids.add(new YiQiGuanTongHu());
+        huValids.add(new SanSeTongShunHu());
+        huValids.add(new SanSeTongKeHu());
+        huValids.add(new HunLaoTouHu());
+        huValids.add(new QingLaoTouHu());
+        huValids.add(new YiBeiKouHu());
         huValids.add(new ShiSanYaoHu());
         huValids.add(new QiXiaoDuiHu());
         huValids.add(new QingYiSeHu());
@@ -107,6 +119,7 @@ public class MajGame {
         huValids.add(new XiaoSiXiHu());
         huValids.add(new DaSanYuanHu());
         huValids.add(new XiaoSanYuanHu());
+        huValids.add(new SiAnKeHu());
         huValids.add(new QingLianBaoZhuHu());
         return huValids;
     }
