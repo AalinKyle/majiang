@@ -27,9 +27,11 @@ public class DefaultCalPointHandler implements CalPointHandler {
 
     private int sumFan(List<Fan> list, int beishu) {
         int sum = 0;
+        boolean yiMan = false;
         for (Fan f : list) {
+            if (f.isYiMan()) yiMan = true;
             sum += f.getNum();
         }
-        return sum * beishu;
+        return sum * beishu * (yiMan ? 36 : 1);
     }
 }

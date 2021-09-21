@@ -27,9 +27,4 @@ public class UserPointMonitor extends MajGameMonitor {
             log.info("选手{} 目前得分{}", user.getName(), user.getPoint());
         }
     }
-
-    @Override
-    protected int getSleep() {
-        return sleep;
-    }
 }
