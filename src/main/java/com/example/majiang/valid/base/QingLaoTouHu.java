@@ -17,8 +17,8 @@ public class QingLaoTouHu extends BaseHuValid {
         for (MajGroup majGroup : list) {
             List<Maj> majs = majGroup.getMajs();
             for (Maj m : majs) {
-                if (m.getType() == 3) return null;
-                if (m.getType() != 3) {
+                if (m.getType() == Maj.ZI) return null;
+                else {
                     if (m.getContent() != 0 && m.getContent() != 8) return null;
                 }
             }

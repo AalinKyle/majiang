@@ -22,7 +22,7 @@ public class DuanYaoJiuHu extends BaseHuValid {
         for (MajGroup majGroup : show) {
             List<Maj> majs = majGroup.getMajs();
             for (Maj maj : majs) {
-                if (maj.getType() == 3 || maj.getContent() == 0 || maj.getContent() == 8) {
+                if (maj.getType() == Maj.ZI || maj.getContent() == 0 || maj.getContent() == 8) {
                     return false;
                 }
             }

@@ -18,7 +18,7 @@ public class MajiangApp {
         User user2 = new User("2", 0);
         User user3 = new User("3", 0);
         User user4 = new User("4", 0);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 1; i++) {
             new Thread(() -> {
                 List<Player<Maj>> players = new ArrayList<>();
                 players.add(findPlayer(user1));

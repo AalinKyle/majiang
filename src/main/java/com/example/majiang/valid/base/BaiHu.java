@@ -16,7 +16,7 @@ public class BaiHu extends BaseHuValid {
                 if (type == MajGroup.MING_KE || type == MajGroup.AN_GANG || type == MajGroup.MING_GANG) {
                     List<Maj> majs = majGroup.getMajs();
                     Maj maj = majs.get(0);
-                    if (maj.getType() == 3 && maj.getContent() == 4) return Fan.YI_HU;
+                    if (maj.getType() == Maj.ZI && maj.getContent() == 4) return Fan.YI_HU;
                 }
             }
         }

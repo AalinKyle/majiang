@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MajGameMonitor extends BaseMonitor {
     private int pre = 0;
-    private int sleep = 5000;
-    private int showSleep = 1000;
+    protected int sleep = 5000;
+    protected int showSleep = 1000;
 
     @Override
     protected void doLog() {

@@ -19,26 +19,26 @@ public class BaoPaiHu extends BaseHuValid {
                 int type = bao.getType();
                 int content = bao.getContent();
                 switch (type) {
-                    case 0: {
+                    case Maj.WAN: {
                         fan += wan[content];
                         break;
                     }
-                    case 1: {
+                    case Maj.TONG: {
                         fan += tong[content];
                         break;
                     }
-                    case 2: {
+                    case Maj.SUO: {
                         fan += suo[content];
                         break;
                     }
-                    case 3: {
+                    case Maj.ZI: {
                         fan += zi[content];
                         break;
                     }
                 }
             }
             if (fan != 0) {
-                return new Fan(fan, "宝牌");
+                return new Fan(fan, "宝牌", false, false, true);
             }
         }
         return null;

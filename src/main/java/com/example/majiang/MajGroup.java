@@ -53,7 +53,7 @@ public class MajGroup {
         for (Maj m : majs) {
             int type = m.getType();
             int content = m.getContent();
-            if (type == 3) return true;
+            if (type == Maj.ZI) return true;
             else if (content == 0 || content == 8) return true;
         }
         return false;

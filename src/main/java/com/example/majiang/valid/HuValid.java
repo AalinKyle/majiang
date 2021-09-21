@@ -55,28 +55,28 @@ public interface HuValid {
                 Maj maj = group.getMajs().get(0);
                 switch (group.getType()) {
                     case MajGroup.SHUN_ZI: {
-                        if (maj.getType() == 0) {
+                        if (maj.getType() == Maj.WAN) {
                             wanShunZi++;
                         }
-                        if (maj.getType() == 1) {
+                        if (maj.getType() == Maj.TONG) {
                             tongShunZi++;
                         }
-                        if (maj.getType() == 2) {
+                        if (maj.getType() == Maj.SUO) {
                             suoShunZi++;
                         }
                         break;
                     }
                     case MajGroup.MING_KE: {
-                        if (maj.getType() == 0) {
+                        if (maj.getType() == Maj.WAN) {
                             wanMingKe++;
                         }
-                        if (maj.getType() == 1) {
+                        if (maj.getType() == Maj.TONG) {
                             tongMingKe++;
                         }
-                        if (maj.getType() == 2) {
+                        if (maj.getType() == Maj.SUO) {
                             suoMingKe++;
                         }
-                        if (maj.getType() == 3) {
+                        if (maj.getType() == Maj.ZI) {
                             if (maj.getContent() <= 3)
                                 fengMingGang++;
                             else {
@@ -86,16 +86,16 @@ public interface HuValid {
                         break;
                     }
                     case MajGroup.AN_GANG: {
-                        if (maj.getType() == 0) {
+                        if (maj.getType() == Maj.WAN) {
                             wanAnGang++;
                         }
-                        if (maj.getType() == 1) {
+                        if (maj.getType() == Maj.TONG) {
                             tongAnGang++;
                         }
-                        if (maj.getType() == 2) {
+                        if (maj.getType() == Maj.SUO) {
                             suoAnGang++;
                         }
-                        if (maj.getType() == 3) {
+                        if (maj.getType() == Maj.ZI) {
                             if (maj.getContent() <= 3)
                                 fengAnGang++;
                             else {
@@ -105,16 +105,16 @@ public interface HuValid {
                         break;
                     }
                     case MajGroup.MING_GANG: {
-                        if (maj.getType() == 0) {
+                        if (maj.getType() == Maj.WAN) {
                             wanMingGang++;
                         }
-                        if (maj.getType() == 1) {
+                        if (maj.getType() == Maj.TONG) {
                             tongMingGang++;
                         }
-                        if (maj.getType() == 2) {
+                        if (maj.getType() == Maj.SUO) {
                             suoMingGang++;
                         }
-                        if (maj.getType() == 3) {
+                        if (maj.getType() == Maj.ZI) {
                             if (maj.getContent() <= 3)
                                 fengMingGang++;
                             else {

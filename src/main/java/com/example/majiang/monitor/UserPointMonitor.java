@@ -9,11 +9,15 @@ import java.util.List;
 @Slf4j
 @Data
 public class UserPointMonitor extends MajGameMonitor {
-    private int sleep = 5000;
     private List<User> users;
 
     public UserPointMonitor(List<User> users) {
+        this(users, 30000);
+    }
+
+    public UserPointMonitor(List<User> users, int sleep) {
         this.users = users;
+        this.sleep = sleep;
     }
 
     @Override

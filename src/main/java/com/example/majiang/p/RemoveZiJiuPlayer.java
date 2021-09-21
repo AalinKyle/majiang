@@ -23,7 +23,7 @@ public class RemoveZiJiuPlayer extends Player<Maj> {
         List<Maj> hand = getHand();
         for (int i = 0; i < hand.size(); i++) {
             Maj t = hand.get(i);
-            if (t.getType() == 3) {
+            if (t.getType() == Maj.ZI) {
                 return hand.remove(i);
             }
         }

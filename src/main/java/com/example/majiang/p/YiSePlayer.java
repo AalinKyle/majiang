@@ -42,7 +42,7 @@ public class YiSePlayer extends Player<Maj> {
         } else if (sz < ss && sz < sw) {
         } else {
 
-        }//todo
+        }//todo  除了这个还有      吃碰需要实现
 
         return super.play();
     }
