@@ -1,7 +1,6 @@
-package com.example.majiang.valid.base;
+package com.example.majiang.valid;
 
 import com.example.majiang.*;
-import com.example.majiang.valid.HuValid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BaseHuValid implements HuValid {
+public class BasePreHuValid implements PreHuValid {
 
     /**
      * 实现//a*AAA+b*ABC+DD 基本胡型 七小对，十三幺不算
@@ -20,9 +19,8 @@ public abstract class BaseHuValid implements HuValid {
      * @return
      */
     @Override
-    public Fan valid0(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, GameInfo gameInfo) {
+    public PreValidRes valid0(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, GameInfo gameInfo) {
         List<MajGroup> list = new LinkedList<>();
-
         int[] wan = hmd.getWan();
         int[] suo = hmd.getSuo();
         int[] tong = hmd.getTong();
@@ -31,10 +29,7 @@ public abstract class BaseHuValid implements HuValid {
         int[] ct = copy(tong);
         int[] cs = copy(suo);
         int[] cz = copy(zi);
-        if (baseHu(cw, ct, cs, cz, show, discard, list, gameInfo)) {
-            return valid(hmd, show, discard, list, gameInfo);
-        }
-        return null;
+        return new PreValidRes(baseHu(cw, ct, cs, cz, show, discard, list, gameInfo), list);
     }
 
     private int[] copy(int[] arr) {
@@ -57,7 +52,9 @@ public abstract class BaseHuValid implements HuValid {
         int gs = 0, qt = 0;
         for (int i = 0; i < t.length; i++) {
             Gpn gw = parse(t[i], i, haveShunZi[i], list);
-            if (gw == null) return false;
+            if (gw == null) {
+                return false;
+            }
             qt += gw.qt;
             gs += gw.gs;
         }
@@ -66,12 +63,17 @@ public abstract class BaseHuValid implements HuValid {
 
     private Gpn parse(int[] majs, int type, boolean haveSunZi, List<MajGroup> list) {
         Gpn gpn = new Gpn();
-        if (bfs(majs, 0, gpn, haveSunZi, list, type)) return gpn;
-        else return null;
+        if (bfs(majs, 0, gpn, haveSunZi, list, type)) {
+            return gpn;
+        } else {
+            return null;
+        }
     }
 
     private boolean bfs(int[] majs, int index, Gpn gpn, boolean haveSunZi, List<MajGroup> mgs, int type) {
-        if (allSame(majs, 0)) return true;
+        if (allSame(majs, 0)) {
+            return true;
+        }
         int i = index;
         while (i < majs.length) {
             if (majs[i] > 0) {
@@ -79,8 +81,9 @@ public abstract class BaseHuValid implements HuValid {
                     majs[i] -= 3;
                     gpn.gs++;
                     mgs.add(new MajGroup(MajGroup.MING_KE, Arrays.asList(new Maj(type, i), new Maj(type, i), new Maj(type, i))));
-                    if (bfs(majs, i, gpn, haveSunZi, mgs, type)) return true;
-                    else {
+                    if (bfs(majs, i, gpn, haveSunZi, mgs, type)) {
+                        return true;
+                    } else {
                         mgs.remove(mgs.size() - 1);
                         majs[i] += 3;
                         gpn.gs--;
@@ -90,8 +93,9 @@ public abstract class BaseHuValid implements HuValid {
                     majs[i] -= 2;
                     gpn.qt++;
                     mgs.add(new MajGroup(MajGroup.QT, Arrays.asList(new Maj(type, i), new Maj(type, i))));
-                    if (bfs(majs, i, gpn, haveSunZi, mgs, type)) return true;
-                    else {
+                    if (bfs(majs, i, gpn, haveSunZi, mgs, type)) {
+                        return true;
+                    } else {
                         mgs.remove(mgs.size() - 1);
                         majs[i] += 2;
                         gpn.qt--;
@@ -103,8 +107,9 @@ public abstract class BaseHuValid implements HuValid {
                     majs[i + 2]--;
                     mgs.add(new MajGroup(MajGroup.QT, Arrays.asList(new Maj(type, i), new Maj(type, i + 1), new Maj(type, i + 2))));
                     gpn.gs++;
-                    if (bfs(majs, i, gpn, haveSunZi, mgs, type)) return true;
-                    else {
+                    if (bfs(majs, i, gpn, haveSunZi, mgs, type)) {
+                        return true;
+                    } else {
                         mgs.remove(mgs.size() - 1);
                         majs[i]++;
                         majs[i + 1]++;
@@ -116,7 +121,9 @@ public abstract class BaseHuValid implements HuValid {
                     return false;
                 }
             }
-            if (majs[i] == 0) i++;
+            if (majs[i] == 0) {
+                i++;
+            }
         }
         return false;
     }
@@ -130,5 +137,4 @@ public abstract class BaseHuValid implements HuValid {
         private int qt;
     }
 
-    public abstract Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo);
 }

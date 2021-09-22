@@ -14,7 +14,9 @@ public class HandMajDistribution {
 
     public HandMajDistribution(List<Maj> hand) {
 
-        if (hand == null) throw new NullPointerException();
+        if (hand == null) {
+            throw new NullPointerException();
+        }
 
         for (Maj t : hand) {
             int type = t.getType();

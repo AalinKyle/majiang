@@ -1,17 +1,14 @@
 package com.example.majiang.p;
 
-import com.example.majiang.HandMajDistribution;
-import com.example.majiang.Maj;
-import com.example.majiang.User;
+import com.example.majiang.*;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 /**
  * 清一色和混一色
  */
-public class YiSePlayer extends Player<Maj> {
+public class YiSePlayer extends BasePlayer {
     public YiSePlayer() {
     }
 
@@ -24,7 +21,7 @@ public class YiSePlayer extends Player<Maj> {
     }
 
     @Override
-    public Maj play() {
+    public Maj play(GameInfo gameInfo) {
         List<Maj> hand = getHand();
         HandMajDistribution distribution = new HandMajDistribution(hand);
         int[] wan = distribution.getWan();
@@ -44,7 +41,7 @@ public class YiSePlayer extends Player<Maj> {
 
         }//todo  除了这个还有      吃碰需要实现
 
-        return super.play();
+        return super.play(gameInfo);
     }
 
     private int sum(int[] arr) {

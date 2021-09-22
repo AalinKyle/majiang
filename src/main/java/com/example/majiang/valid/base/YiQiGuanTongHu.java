@@ -1,13 +1,14 @@
 package com.example.majiang.valid.base;
 
 import com.example.majiang.*;
-import org.apache.ibatis.annotations.Param;
+import com.example.majiang.valid.Hu;
+import com.example.majiang.valid.HuValid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-public class YiQiGuanTongHu extends BaseHuValid {
+@Hu
+public class YiQiGuanTongHu implements HuValid {
     private static final MajGroup[] SHUNZI_WAN = new MajGroup[]{
             new MajGroup(MajGroup.SHUN_ZI, Arrays.asList(new Maj(0, 0), new Maj(0, 1), new Maj(0, 2))),
             new MajGroup(MajGroup.SHUN_ZI, Arrays.asList(new Maj(0, 3), new Maj(0, 4), new Maj(0, 5))),

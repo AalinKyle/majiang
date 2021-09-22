@@ -2,7 +2,9 @@ package com.example;
 
 import com.example.majiang.*;
 import com.example.majiang.monitor.UserPointMonitor;
+import com.example.majiang.p.BasePlayer;
 import com.example.majiang.p.Player;
+import com.example.majiang.valid.MyHus;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ public class MajiangApp {
         User user4 = new User("4", 0);
         for (int i = 0; i < 6; i++) {
             new Thread(() -> {
-                List<Player<Maj>> players = new ArrayList<>();
+                List<Player<Maj, MajGroup>> players = new ArrayList<>();
                 players.add(buildPlayer(user1));
                 players.add(buildPlayer(user2));
                 players.add(buildPlayer(user3));
@@ -34,7 +36,7 @@ public class MajiangApp {
         new Thread(new UserPointMonitor(Arrays.asList(user1, user2, user3, user4))).start();
     }
 
-    private static Player<Maj> buildPlayer(User user) {
-        return new Player<Maj>(user, new MajSort());
+    private static Player<Maj, MajGroup> buildPlayer(User user) {
+        return new BasePlayer(user, new MajSort());
     }
 }

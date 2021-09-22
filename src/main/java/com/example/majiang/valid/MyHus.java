@@ -1,6 +1,5 @@
-package com.example.majiang;
+package com.example.majiang.valid;
 
-import com.example.majiang.valid.HuValid;
 import com.example.majiang.valid.base.*;
 import com.example.majiang.valid.spc.QiXiaoDuiHu;
 import com.example.majiang.valid.spc.ShiSanYaoHu;

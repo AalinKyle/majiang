@@ -1,6 +1,4 @@
-package com.example.majiang;
-
-import com.example.majiang.valid.HuValid;
+package com.example.majiang.valid;
 
 import java.util.List;
 

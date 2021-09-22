@@ -13,13 +13,13 @@ public class MajTable {
      */
     public void deal() {
         for (int i = 0; i < 3; i++) {
-            for (Player<Maj> player : players) {
+            for (Player<Maj,MajGroup> player : players) {
                 for (int j = 0; j < 4; j++) {
                     player.touch(touch());
                 }
             }
         }
-        for (Player<Maj> player : players) {
+        for (Player<Maj,MajGroup> player : players) {
                 player.touch(touch());
         }
     }
@@ -27,14 +27,14 @@ public class MajTable {
 
     private List<Maj> pool = new ArrayList<>();
 
-    private List<Player<Maj>> players;
+    private List<Player<Maj, MajGroup>> players;
     private Maj current;
 
-    public void addPlayer(Player<Maj> player) {
+    public void addPlayer(Player<Maj,MajGroup> player) {
         players.add(player);
     }
 
-    public void addPlayers(List<Player<Maj>> players) {
+    public void addPlayers(List<Player<Maj, MajGroup>> players) {
         this.players.addAll(players);
     }
 

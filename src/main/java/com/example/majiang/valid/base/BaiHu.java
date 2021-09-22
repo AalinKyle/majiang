@@ -1,10 +1,13 @@
 package com.example.majiang.valid.base;
 
 import com.example.majiang.*;
+import com.example.majiang.valid.Hu;
+import com.example.majiang.valid.HuValid;
 
 import java.util.List;
 
-public class BaiHu extends BaseHuValid {
+@Hu
+public class BaiHu implements HuValid {
     @Override
     public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
         int[] zi = hmd.getZi();
@@ -16,7 +19,9 @@ public class BaiHu extends BaseHuValid {
                 if (type == MajGroup.MING_KE || type == MajGroup.AN_GANG || type == MajGroup.MING_GANG) {
                     List<Maj> majs = majGroup.getMajs();
                     Maj maj = majs.get(0);
-                    if (maj.getType() == Maj.ZI && maj.getContent() == 4) return Fan.YI_HU;
+                    if (maj.getType() == Maj.ZI && maj.getContent() == 4) {
+                        return Fan.YI_HU;
+                    }
                 }
             }
         }
