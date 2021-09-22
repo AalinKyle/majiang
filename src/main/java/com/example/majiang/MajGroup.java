@@ -26,19 +26,25 @@ public class MajGroup {
 
 
     private int type;
-    private List<Maj> majs;
+    private List<GroupMaj> majs;
 
     public boolean contain(Maj maj) {
         for (Maj m : majs) {
-            if (m.equals(maj)) return true;
+            if (m.equals(maj)) {
+                return true;
+            }
         }
         return false;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         MajGroup majGroup = (MajGroup) o;
         return type == majGroup.type &&
                 Objects.equals(majs, majGroup.majs);

@@ -22,19 +22,18 @@ public class DefaultHuValidHandler implements HuValidHandler {
             for (int i = 0; i < huValids.size(); i++) {
                 HuValid huValid = huValids.get(i);
                 Hu hu = huValid.getClass().getAnnotation(Hu.class);
+                Class preClazz = NoValidPreHuValid.class;
                 if (hu != null) {
-                    Class preClazz = hu.preClazz();
-                    try {
-                        PreHuValid preHuValid = classMap.getOrDefault(preClazz, (PreHuValid) preClazz.newInstance());
-                        classMap.put(preClazz, preHuValid);
-                        List<HuValid> list = valids.getOrDefault(preHuValid, new ArrayList<>());
-                        list.add(huValid);
-                        valids.put(preHuValid, list);
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
+                    preClazz = hu.preClazz();
+                }
+                try {
+                    PreHuValid preHuValid = classMap.getOrDefault(preClazz, (PreHuValid) preClazz.newInstance());
+                    classMap.put(preClazz, preHuValid);
+                    List<HuValid> list = valids.getOrDefault(preHuValid, new ArrayList<>());
+                    list.add(huValid);
+                    valids.put(preHuValid, list);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -83,7 +82,7 @@ public class DefaultHuValidHandler implements HuValidHandler {
             }
         }
         if (fans.size() > 0) {
-            return new HuRecord(isYiMan, hu, new Date(), resFans, new HuMaj(majs, show));
+            return new HuRecord().setYiMan(isYiMan).setHu(hu).setHuTime(new Date()).setFans(resFans).setHuMaj(new HuMaj(majs, show, discard));
         } else {
             return null;
         }

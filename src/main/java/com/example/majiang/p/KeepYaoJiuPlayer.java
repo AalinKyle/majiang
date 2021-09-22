@@ -25,9 +25,11 @@ public class KeepYaoJiuPlayer extends BasePlayer {
         for (int i = 0; i < hand.size(); i++) {
             Maj t = hand.get(i);
             if (t.getType() != 3) {
-                if (t.getContent() == 3 || t.getContent() == 4 || t.getContent() == 5) return hand.remove(i);
+                if (t.getContent() == 3 || t.getContent() == 4 || t.getContent() == 5) {
+                    return hand.remove(i);
+                }
             }
         }
-        return super.play(gameInfo );
+        return super.play(gameInfo);
     }
 }

@@ -25,6 +25,16 @@ public class BasePlayer implements Player<Maj, MajGroup> {
         user.getPoint().addAndGet(n);
     }
 
+    /**
+     * @param group
+     * @param discard 吃碰杠完需要把手牌转移到副露那里
+     */
+    @Override
+    public void addShow(MajGroup group, List<Maj> discard) {
+        show.add(group);
+        hand.removeAll(discard);
+    }
+
     private String name;
     private boolean enableLog;
     private List<Maj> hand;

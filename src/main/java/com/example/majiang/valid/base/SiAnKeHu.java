@@ -5,6 +5,7 @@ import com.example.majiang.valid.Hu;
 import com.example.majiang.valid.HuValid;
 
 import java.util.List;
+
 @Hu
 public class SiAnKeHu implements HuValid {
     @Override
@@ -51,6 +52,8 @@ public class SiAnKeHu implements HuValid {
                 dui++;
             }
         }
+        ShowEswnzfbx eswnzfbx = parseShow(show);
+        dui += eswnzfbx.getAnGangNum();
         return dui == 4 && qt ? Fan.SI_AN_KE : null;
     }
 }

@@ -14,5 +14,5 @@ public interface BaoPaiHandler {
 
     public void putBaoPai(Maj maj);
 
-    public List<Maj> getBaoPai();
+    public List<Maj> getBaoPais();
 }

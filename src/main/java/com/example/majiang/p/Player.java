@@ -17,6 +17,8 @@ public interface Player<T extends Maj, U extends MajGroup> {
 
     public void addPoint(int n);
 
+    public void addShow(U group,List<T> discard);
+
     public List<T> getHand();
 
     public void touch(T maj);

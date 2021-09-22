@@ -5,6 +5,7 @@ import com.example.majiang.valid.Hu;
 import com.example.majiang.valid.HuValid;
 
 import java.util.List;
+
 @Hu
 public class HunLaoTouHu implements HuValid {
     @Override
@@ -13,13 +14,17 @@ public class HunLaoTouHu implements HuValid {
         int[] suo = hmd.getSuo();
         int[] tong = hmd.getTong();
         for (int i = 1; i < wan.length - 1; i++) {
-            if (wan[i] > 0 || tong[i] > 0 || suo[i] > 0) return null;
+            if (wan[i] > 0 || tong[i] > 0 || suo[i] > 0) {
+                return null;
+            }
         }
         for (MajGroup majGroup : list) {
-            List<Maj> majs = majGroup.getMajs();
+            List<GroupMaj> majs = majGroup.getMajs();
             for (Maj m : majs) {
                 if (m.getType() != 3) {
-                    if (m.getContent() != 0 && m.getContent() != 8) return null;
+                    if (m.getContent() != 0 && m.getContent() != 8) {
+                        return null;
+                    }
                 }
             }
         }

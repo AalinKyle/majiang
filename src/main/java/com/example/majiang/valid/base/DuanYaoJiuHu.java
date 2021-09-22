@@ -22,7 +22,7 @@ public class DuanYaoJiuHu implements HuValid {
 
     private boolean duanyaojiu(List<MajGroup> show) {
         for (MajGroup majGroup : show) {
-            List<Maj> majs = majGroup.getMajs();
+            List<GroupMaj> majs = majGroup.getMajs();
             for (Maj maj : majs) {
                 if (maj.getType() == Maj.ZI || maj.getContent() == 0 || maj.getContent() == 8) {
                     return false;

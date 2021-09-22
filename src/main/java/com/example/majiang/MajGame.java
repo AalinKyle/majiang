@@ -8,9 +8,7 @@ import com.example.majiang.feng.TableInfoHandler;
 import com.example.majiang.p.Player;
 import com.example.majiang.point.CalPointHandler;
 import com.example.majiang.point.DefaultCalPointHandler;
-import com.example.majiang.valid.DefaultHuValidHandler;
-import com.example.majiang.valid.HuValidHandler;
-import com.example.majiang.valid.Hus;
+import com.example.majiang.valid.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +32,10 @@ public class MajGame {
     private TableInfoHandler tableInfoHandler;
     private BaoPaiHandler baoPaiHandler;
     private HuValidHandler huValidHandler;
+    private GangValidHandler mingGangValidHandler;
+    private GangValidHandler anGangValidHandler;
+    private PengValidHandler pengValidHandler;
+    private ChiValidHandler chiValidHandler;
 
     public MajGame(Hus hus) {
         this.hus = hus;
@@ -41,6 +43,10 @@ public class MajGame {
         pointHandler = new DefaultCalPointHandler();
         tableInfoHandler = new DefaultTableInfoHandler();
         baoPaiHandler = new DefaultBaoPaiHandler();
+        mingGangValidHandler = new MingGangValidHandler();
+        anGangValidHandler = new AnGangValidHandler();
+        pengValidHandler = new DefaultPengValidHandler();
+        chiValidHandler = new DefaultChiValidHandler();
     }
 
     public void clear() {
@@ -85,7 +91,7 @@ public class MajGame {
             prePlay(players);
             int no = dealer;
             HuRecord huRecord;
-            Maj current;
+            Maj currentMaj;
             int shou = 0;
             Integer winnerNo = null;
             boolean over = false;
@@ -95,11 +101,16 @@ public class MajGame {
                 // 当前获取player
                 Player<Maj, MajGroup> player = players.get(no % players.size());
                 //摸牌
-                player.touch(table.touch());
+                currentMaj = table.touch();
+                player.touch(currentMaj);
                 //判断有没有自摸
-                huRecord = validFan(player, buildGameInfo(players, player));
+                /**
+                 *摸牌时的game info
+                 */
+                GameInfo touchGameInfo = buildGameInfo(players, player, currentMaj, true);
+                huRecord = validFan(player, touchGameInfo);
                 if (huRecord != null && huRecord.isHu()) {
-                    log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 自摸胡=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPai(), shou, player.getName(), huRecord.getHuMaj(), buildFanString(huRecord.getFans()));
+                    log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 自摸胡=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), shou, player.getName(), huRecord.getHuMaj(), buildFanString(huRecord.getFans()));
                     //算自摸分
                     pointHandler.checkZiMoPoint(player, players, huRecord);
                     winnerNo = tmpInfos.get(player.getName()).getPlayerNo();
@@ -107,21 +118,27 @@ public class MajGame {
                     rec(huRecord);
                     discard = false;
                     /**
-                     * 自摸不存在多炮
+                     * 自摸不存在一炮多响
                      */
                     break;
                 }
-                //弃牌
-                current = player.play(buildGameInfo(players, player));
-                for (int i = 1; i < players.size(); i++) {
+                GangRecord anGangRecord = validAnGang(player, touchGameInfo);
+                if (anGangRecord != null && anGangRecord.isGang()) {
+                    player.addShow(anGangRecord.getGroup(), anGangRecord.getNeedRemoveHand());
                     /**
-                     * 按顺序
+                     * 杠完摸一张牌，并且开一张宝牌
                      */
+                    player.touch(table.touch());
+                    baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
+                }
+                //弃牌
+                currentMaj = player.play(buildGameInfo(players, player, null, false));
+                for (int i = 1; i < players.size(); i++) {
                     Player<Maj, MajGroup> other = players.get((no + i) % players.size());
                     //判断没有没有放炮
-                    huRecord = validFan(other, current, buildGameInfo(players, other));
+                    huRecord = validFan(other, currentMaj, buildGameInfo(players, other, currentMaj, false));
                     if (huRecord != null && huRecord.isHu()) {
-                        log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 胡 {} 放炮=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPai(), shou, other.getName(), player.getName(), huRecord.getHuMaj(), buildFanString(huRecord.getFans()));
+                        log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 胡 {} 放炮=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), shou, other.getName(), player.getName(), huRecord.getHuMaj(), buildFanString(huRecord.getFans()));
                         //算放炮分
                         pointHandler.checkFangPaoPoint(other, player, huRecord);
                         //记录
@@ -135,13 +152,82 @@ public class MajGame {
                     }
                 }
                 /**
+                 * 明杠
+                 */
+
+                boolean fulu = true;
+                for (int i = 1; i < players.size(); i++) {
+                    Player<Maj, MajGroup> other = players.get((no + i) % players.size());
+                    //判断没有没有放炮
+                    GangRecord mingGangRecord = validMingGang(other, buildGameInfo(players, other, currentMaj, false));
+                    if (mingGangRecord != null && mingGangRecord.isGang()) {
+                        fulu = false;
+                        other.addShow(mingGangRecord.getGroup(), mingGangRecord.getNeedRemoveHand());
+                        /**
+                         * 杠完摸一张牌，并且开一张宝牌
+                         */
+                        other.touch(table.touch());
+                        baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
+
+                        //TODO 需要实现吃碰杠下 逻辑顺序的转换，之前逻辑行不通
+                        currentMaj = other.play(buildGameInfo(players, other, null, true));
+                        discard = false;
+                        /**
+                         * 不存在多个人都杠，所以一个人杠完就可以break
+                         */
+                        break;
+                    }
+                }
+                /**
+                 * 碰
+                 */
+                if (fulu) {
+                    for (int i = 1; i < players.size(); i++) {
+                        fulu = false;
+                        /**
+                         * 按顺序
+                         */
+                        Player<Maj, MajGroup> other = players.get((no + i) % players.size());
+                        //判断没有没有放炮
+                        huRecord = validPeng(other, currentMaj, buildGameInfo(players, other, currentMaj, false));
+                        if (huRecord != null && huRecord.isHu()) {
+                            /**
+                             * 可能一炮多响，要把其他玩家都判断了。
+                             */
+                            discard = false;
+                            over = true;
+                        }
+                    }
+                }
+                /**
+                 * 吃
+                 */
+                if (fulu) {
+                    for (int i = 1; i < players.size(); i++) {
+                        /**
+                         * 按顺序
+                         */
+                        Player<Maj, MajGroup> other = players.get((no + i) % players.size());
+                        //判断没有没有放炮
+                        huRecord = validChi(other, currentMaj, buildGameInfo(players, other, currentMaj, false));
+                        if (huRecord != null && huRecord.isHu()) {
+                            /**
+                             * 可能一炮多响，要把其他玩家都判断了。
+                             */
+                            discard = false;
+                            over = true;
+                        }
+                    }
+                }
+
+                /**
                  * 如果没有被胡吃碰杠，就进入弃牌堆
                  */
                 if (discard) {
-                    player.addDiscard(current);
+                    player.addDiscard(currentMaj);
                 }
                 //这一手结束，加1
-                no++;
+                no = (++no >= players.size()) ? no % players.size() : no;
             }//这把打完，判断是否换庄
             changeDealer(winnerNo, players);
         } finally {
@@ -153,12 +239,27 @@ public class MajGame {
     }
 
 
-    private GameInfo buildGameInfo(List<Player<Maj, MajGroup>> all, Player<Maj, MajGroup> player) {
+    private GangRecord validAnGang(Player<Maj, MajGroup> player, GameInfo touchGameInfo) {
+        List<Maj> hand = player.getHand();
+        return anGangValidHandler.validGang(hand, touchGameInfo);
+    }
+
+    private GangRecord validMingGang(Player<Maj, MajGroup> player, GameInfo touchGameInfo) {
+        List<Maj> hand = player.getHand();
+        return mingGangValidHandler.validGang(hand, touchGameInfo);
+    }
+
+
+    //-----------------------------------------------------------------------------------------------------------------------------------//
+
+    private GameInfo buildGameInfo(List<Player<Maj, MajGroup>> all, Player<Maj, MajGroup> player, Maj current, boolean zimo) {
         GameInfo gameInfo = new GameInfo();
-        gameInfo.setBaoPai(baoPaiHandler.getBaoPai());
+        gameInfo.setBaoPai(baoPaiHandler.getBaoPais());
         gameInfo.setChangFeng(changFen);
         gameInfo.setZiFeng(calZiFeng(player));
         gameInfo.setPlayerTableInfos(buildPlayerTableInfoMap(all, player));
+        gameInfo.setZimo(zimo);
+        gameInfo.setCurrent(current);
         return gameInfo;
     }
 
@@ -176,6 +277,7 @@ public class MajGame {
     private PlayerTableInfo buildPlayerTableInfo(Player<Maj, MajGroup> player) {
         return new PlayerTableInfo(player.getShow(), player.getDiscard());
     }
+    //----------------------------------------------------------------------------------------------------------------------------------//
 
 
     private String buildFanString(List<Fan> fans) {
@@ -209,7 +311,7 @@ public class MajGame {
     }
 
     private Map<String, Integer> buildMap(List<Fan> list) {
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>(list.size());
         for (Fan f : list) {
             String type = f.getType();
             map.put(type, map.getOrDefault(type, 0) + 1);
@@ -224,6 +326,7 @@ public class MajGame {
         }
         return sum;
     }
+    //----------------------------------------------------------------------------------------------------------------------------------//
 
 
     private int calZiFeng(Player<Maj, MajGroup> player) {
@@ -234,7 +337,7 @@ public class MajGame {
         return tableInfoHandler.calZiFeng(gameTmp.getPlayerNo(), dealer);
     }
 
-    private void record(Player<Maj, MajGroup> winner, List<Player<Maj, MajGroup>> loser, int type, HuRecord record) {
+    private void record(Player<Maj, MajGroup> winner, List<Player<Maj, MajGroup>> loser, GameInfo gameInfo, HuRecord record) {
 
     }
 

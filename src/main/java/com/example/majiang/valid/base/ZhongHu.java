@@ -5,6 +5,7 @@ import com.example.majiang.valid.Hu;
 import com.example.majiang.valid.HuValid;
 
 import java.util.List;
+
 @Hu
 public class ZhongHu implements HuValid {
     @Override
@@ -16,9 +17,11 @@ public class ZhongHu implements HuValid {
             for (MajGroup majGroup : show) {
                 int type = majGroup.getType();
                 if (type == MajGroup.MING_KE || type == MajGroup.AN_GANG || type == MajGroup.MING_GANG) {
-                    List<Maj> majs = majGroup.getMajs();
+                    List<GroupMaj> majs = majGroup.getMajs();
                     Maj maj = majs.get(0);
-                    if (maj.getType() == Maj.ZI && maj.getContent() == 6) return Fan.YI_HU;
+                    if (maj.getType() == Maj.ZI && maj.getContent() == 6) {
+                        return Fan.YI_HU;
+                    }
                 }
             }
         }

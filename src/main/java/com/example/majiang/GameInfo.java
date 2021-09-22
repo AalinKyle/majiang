@@ -1,6 +1,5 @@
 package com.example.majiang;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class GameInfo {
     /**
@@ -21,4 +19,6 @@ public class GameInfo {
     private int ziFeng;
     private List<Maj> baoPai;
     private Map<Integer, PlayerTableInfo> playerTableInfos;
+    private boolean zimo;
+    private Maj current;
 }

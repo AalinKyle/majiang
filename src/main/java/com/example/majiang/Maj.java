@@ -3,7 +3,6 @@ package com.example.majiang;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.Objects;
 
@@ -24,7 +23,7 @@ public class Maj {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        if (type != 3) {
+        if (type != ZI) {
             sb.append(contents[content]).append(types[type]);
         } else {
             sb.append(zi[content]);
@@ -34,8 +33,12 @@ public class Maj {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Maj maj = (Maj) o;
         return type == maj.type &&
                 content == maj.content;

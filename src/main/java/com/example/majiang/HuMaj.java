@@ -12,4 +12,5 @@ import java.util.List;
 public class HuMaj {
     private List<Maj> hand;
     private List<MajGroup> show;
+    private List<Maj> discard;
 }

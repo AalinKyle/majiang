@@ -45,7 +45,7 @@ public class DefaultBaoPaiHandler implements BaoPaiHandler {
 
 
     @Override
-    public List<Maj> getBaoPai() {
+    public List<Maj> getBaoPais() {
         return baoPai;
     }
 

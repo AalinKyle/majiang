@@ -6,6 +6,7 @@ import com.example.majiang.valid.HuValid;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Hu
 public class SanSeTongKeHu implements HuValid {
     @Override
@@ -16,10 +17,13 @@ public class SanSeTongKeHu implements HuValid {
         tmp.addAll(list);
         List<MajGroup> ke = new ArrayList<>();
         for (MajGroup majGroup : tmp) {//字牌没有同刻
-            if ((majGroup.getType() == MajGroup.MING_KE || majGroup.getType() == MajGroup.AN_KE) && majGroup.getMajs().get(0).getType() != 3)
+            if ((majGroup.getType() == MajGroup.MING_KE || majGroup.getType() == MajGroup.AN_KE) && majGroup.getMajs().get(0).getType() != 3) {
                 ke.add(majGroup);
+            }
         }
-        if (ke.size() < 3) return null;
+        if (ke.size() < 3) {
+            return null;
+        }
 
         for (int i = 0; i < ke.size() - 2; i++) {
             MajGroup ii = ke.get(i);
@@ -37,10 +41,14 @@ public class SanSeTongKeHu implements HuValid {
     }
 
     private boolean tongke(MajGroup m1, MajGroup m2) {
-        if (m1.getType() != MajGroup.SHUN_ZI || m2.getType() != MajGroup.SHUN_ZI) return false;
-        List<Maj> majs1 = m1.getMajs();
-        List<Maj> majs2 = m2.getMajs();
-        if (majs1.get(0).getType() == majs2.get(0).getType()) return false;
+        if (m1.getType() != MajGroup.SHUN_ZI || m2.getType() != MajGroup.SHUN_ZI) {
+            return false;
+        }
+        List<GroupMaj> majs1 = m1.getMajs();
+        List<GroupMaj> majs2 = m2.getMajs();
+        if (majs1.get(0).getType() == majs2.get(0).getType()) {
+            return false;
+        }
         return majs1.get(0).getContent() == majs2.get(0).getContent();
     }
 
