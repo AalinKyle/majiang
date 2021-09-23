@@ -2,6 +2,7 @@ package com.example.majiang.p;
 
 import com.example.majiang.*;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,15 +33,31 @@ public class YiSePlayer extends BasePlayer {
         int ss = sum(suo);
         int st = sum(tong);
         int sz = sum(zi);
-        if (sw < ss & sw < st) {
+        int[][] tmp = new int[][]{
+                {sw, Maj.WAN}, {ss, Maj.TONG}, {st, Maj.SUO}, {sz, Maj.ZI}
+        };
+        Arrays.sort(tmp, Comparator.comparingInt(o -> o[0]));
 
-        } else if (ss < sw && ss < sz) {
 
-        } else if (sz < ss && sz < sw) {
-        } else {
+        int zeroNum = 0;
+        for (int i = 0; i < tmp.length - 1; i++) {
+            if (tmp[i][0] == 0) {
+                zeroNum++;
+            }
+        }
+        boolean haveToRemoveZi = zeroNum == 2 && sz < hand.size() / 2;
+        for (int[] t : tmp) {
+            if (t[0] > 0) {
+                if (t[1] != Maj.ZI && !haveToRemoveZi) {
+                    for (int i = 0; i < hand.size(); i++) {
+                        if (hand.get(i).getType() == t[1]) {
+                            return hand.remove(i);
+                        }
+                    }
+                }
 
-        }//todo  除了这个还有      吃碰需要实现
-
+            }
+        }
         return super.play(gameInfo);
     }
 

@@ -83,7 +83,7 @@ public class DefaultHuValidHandler implements HuValidHandler {
             }
         }
         if (fans.size() > 0) {
-            return new HuRecord().setYiMan(isYiMan).setHu(hu).setHuTime(new Date()).setFans(resFans).setHuMaj(new HuMaj(majs, show, discard, gameInfo.getCurrentMaj()));
+            return new HuRecord().setYiMan(isYiMan).setHu(hu).setHuTime(new Date()).setFans(resFans).setZiFeng(gameInfo.getZiFeng()).setChangFeng(gameInfo.getChangFeng()).setHuMaj(new HuMaj(majs, show, discard, gameInfo.getCurrentMaj()));
         } else {
             return null;
         }

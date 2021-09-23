@@ -43,19 +43,19 @@ public class ShowEswnzfbx {
     public boolean onlyHave(int type) {
         if (groupNum == 0) return false;
         switch (type) {
-            case 0: {
+            case Maj.WAN: {
                 //万
                 return groupNum == wanShunZi + wanMingKe + wanMingGang + wanAnGang;
             }
-            case 1: {
+            case Maj.TONG: {
                 //筒
                 return groupNum == tongShunZi + tongMingKe + tongMingGang + tongAnGang;
             }
-            case 2: {
+            case Maj.SUO: {
                 //索
                 return groupNum == suoShunZi + suoMingKe + suoMingGang + suoAnGang;
             }
-            case 3: {
+            case Maj.ZI: {
                 //字
                 return groupNum == fengMingKe + fengMingGang + fengAnGang + yiMingKe + yiMingGang + yiAnGang;
             }

@@ -20,7 +20,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MajGame {
     private MajTable table;
-    private static Map<String, List<HuRecord>> record = new HashMap<>();
+    public static Map<String, List<HuRecord>> record = new HashMap<>();
+    public static Map<String, List<HuMaj>> playerRec = new HashMap<>();
+    public static HuRecord max;
     public static AtomicInteger gameNum = new AtomicInteger(0);
     private Map<String, GameTmp> tmpInfos;
     /**
@@ -119,12 +121,12 @@ public class MajGame {
                 HuRecord zimohuRecord = validFan(player, touchGameInfo);
                 if (zimohuRecord != null && zimohuRecord.isHu()) {
                     if (player.chooseHu(zimohuRecord, touchGameInfo)) {
-                        log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 自摸胡=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, player.getName(), zimohuRecord.getHuMaj(), buildFanString(zimohuRecord.getFans()));
+                        log.info("第{}局,场风{}庄家{},宝牌{},{}手,#{}# 自摸胡=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, player.getName(), zimohuRecord.getHuMaj(), buildFanString(zimohuRecord.getFans()));
                         //算自摸分
                         pointHandler.checkZiMoPoint(player, players, zimohuRecord);
                         winnerNo.add(tmpInfos.get(player.getName()).getPlayerNo());
                         //记录
-                        rec(zimohuRecord);
+                        rec(player, zimohuRecord);
                         /**
                          * 自摸不存在一炮多响
                          */
@@ -158,11 +160,11 @@ public class MajGame {
                         HuRecord fangpaohuRecord = validFan(other, currentMaj, buildGameInfo(players, other, currentMaj, false));
                         if (fangpaohuRecord != null && fangpaohuRecord.isHu()) {
                             if (other.chooseHu(fangpaohuRecord, buildGameInfo(players, other, currentMaj, false))) {
-                                log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 胡 {} 放炮=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, other.getName(), player.getName(), fangpaohuRecord.getHuMaj(), buildFanString(fangpaohuRecord.getFans()));
+                                log.info("第{}局,场风{}庄家{},宝牌{},{}手,#{}# 胡 #{}# 放炮=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, other.getName(), player.getName(), fangpaohuRecord.getHuMaj(), buildFanString(fangpaohuRecord.getFans()));
                                 //算放炮分
                                 pointHandler.checkFangPaoPoint(other, player, fangpaohuRecord);
                                 //记录
-                                rec(fangpaohuRecord);
+                                rec(other, fangpaohuRecord);
                                 winnerNo.add(tmpInfos.get(other.getName()).getPlayerNo());
                                 /**
                                  * 可能一炮多响，要把其他玩家都判断了。
@@ -376,11 +378,36 @@ public class MajGame {
 
     }
 
-    private void rec(HuRecord huRecord) {
+    private void rec(Player<Maj, MajGroup> winner, HuRecord huRecord) {
         for (Fan fan : huRecord.getFans()) {
             List<HuRecord> list = record.getOrDefault(fan.getType(), new ArrayList<>());
             list.add(huRecord);
             record.put(fan.getType(), list);
+            List<HuMaj> playerRecList = playerRec.getOrDefault(winner.getName(), new ArrayList<>());
+            playerRecList.add(huRecord.getHuMaj());
+            playerRec.put(winner.getName(), playerRecList);
+
+            if (max == null) {
+                max = huRecord;
+            } else {
+                List<Fan> fans = huRecord.getFans();
+                int sumFan = sumFan(fans);
+                if (fans.get(0).isYiMan()) {
+                    if (max.isYiMan()) {
+                        if (sumFan > sumFan(max.getFans())) {
+                            max = huRecord;
+                        }
+                    }
+                } else {
+                    if (!max.isYiMan()) {
+                        if (sumFan > sumFan(max.getFans())) {
+                            max = huRecord;
+                        }
+                    }
+                }
+            }
+
+
         }
     }
 

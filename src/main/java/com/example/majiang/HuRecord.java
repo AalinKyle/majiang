@@ -17,4 +17,7 @@ public class HuRecord {
     private List<Fan> fans;
     private HuMaj huMaj;
     private int fu;
+
+    private int changFeng;
+    private int ziFeng;
 }
