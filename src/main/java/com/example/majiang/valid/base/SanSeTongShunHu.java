@@ -16,9 +16,13 @@ public class SanSeTongShunHu implements HuValid {
         tmp.addAll(list);
         List<MajGroup> shunzi = new ArrayList<>();
         for (MajGroup majGroup : tmp) {
-            if (majGroup.getType() == MajGroup.SHUN_ZI) shunzi.add(majGroup);
+            if (majGroup.getType() != MajGroup.SHUN_ZI) {
+                shunzi.add(majGroup);
+            }
         }
-        if (shunzi.size() < 3) return null;
+        if (shunzi.size() < 3) {
+            return null;
+        }
 
         for (int i = 0; i < shunzi.size() - 2; i++) {
             MajGroup ii = shunzi.get(i);
@@ -27,7 +31,9 @@ public class SanSeTongShunHu implements HuValid {
                 if (tongsun(ii, jj)) {
                     for (int k = j + 1; k < shunzi.size(); k++) {
                         MajGroup kk = shunzi.get(k);//略微有点愚蠢，以后再改
-                        if (tongsun(ii, kk) && tongsun(jj, kk)) return Fan.SAN_SE_TONG_SHUN;
+                        if (tongsun(ii, kk) && tongsun(jj, kk)) {
+                            return Fan.SAN_SE_TONG_SHUN;
+                        }
                     }
                 }
             }

@@ -17,7 +17,11 @@ public class SanSeTongKeHu implements HuValid {
         tmp.addAll(list);
         List<MajGroup> ke = new ArrayList<>();
         for (MajGroup majGroup : tmp) {//字牌没有同刻
-            if ((majGroup.getType() == MajGroup.MING_KE || majGroup.getType() == MajGroup.AN_KE) && majGroup.getMajs().get(0).getType() != 3) {
+            int type = majGroup.getType();
+            int majType = majGroup.getMajs().get(0).getType();
+            boolean noShunZi = type == MajGroup.MING_KE || type == MajGroup.AN_KE ||
+                    type == MajGroup.MING_GANG || type == MajGroup.AN_GANG;
+            if (noShunZi && majType != Maj.ZI) {
                 ke.add(majGroup);
             }
         }
