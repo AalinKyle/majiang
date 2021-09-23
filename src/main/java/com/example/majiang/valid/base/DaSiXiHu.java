@@ -5,6 +5,7 @@ import com.example.majiang.valid.Hu;
 import com.example.majiang.valid.HuValid;
 
 import java.util.List;
+
 @Hu
 public class DaSiXiHu implements HuValid {
     @Override
@@ -12,7 +13,9 @@ public class DaSiXiHu implements HuValid {
         int[] zi = hmd.getZi();
         int res = 0;
         for (int i = 0; i < 4; i++) {
-            if (zi[i] == 3) res++;
+            if (zi[i] == 3) {
+                res++;
+            }
         }
         ShowEswnzfbx eswnzfbx = parseShow(show);
         if (eswnzfbx.getGroupNum() > 0) {

@@ -36,6 +36,7 @@ public class MyHus implements Hus {
         huValids.add(new DaSanYuanHu());
         huValids.add(new XiaoSanYuanHu());
         huValids.add(new SiAnKeHu());
+        huValids.add(new SiGangZiHu());
         huValids.add(new QingLianBaoZhuHu());
         return huValids;
     }

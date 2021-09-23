@@ -4,7 +4,9 @@ import com.example.majiang.*;
 import com.example.majiang.valid.Hu;
 import com.example.majiang.valid.HuValid;
 
+import java.util.ArrayList;
 import java.util.List;
+
 @Hu
 public class QingYiSeHu implements HuValid {
 
@@ -18,23 +20,27 @@ public class QingYiSeHu implements HuValid {
      */
     @Override
     public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
-        int[] wan = hmd.getWan();
-        int[] suo = hmd.getSuo();
-        int[] tong = hmd.getTong();
         int[] zi = hmd.getZi();
         ShowEswnzfbx eswnzfbx = parseShow(show);
         boolean haveZi = false;
         if (eswnzfbx.getFengAnGang() > 0 || eswnzfbx.getFengMingGang() > 0 || eswnzfbx.getFengMingKe() > 0 || eswnzfbx.getYiAnGang() > 0 || eswnzfbx.getYiMingGang() > 0 || eswnzfbx.getYiMingKe() > 0) {
             haveZi = true;
         }
+        int t = -1;
         if (!haveZi && sum(zi) == 0) {
-            boolean haveWan = sum(wan) > 0;
-            boolean haveSuo = sum(suo) > 0;
-            boolean haveTong = sum(tong) > 0;
-
-            if ((haveWan && !haveSuo && !haveTong) || (!haveWan && haveSuo && !haveTong) || (!haveWan && !haveSuo && haveTong)) {
-                return Fan.QING_YI_SE;
+            ArrayList<MajGroup> newArr = new ArrayList<>(list);
+            newArr.addAll(show);
+            for (MajGroup m : newArr) {
+                GroupMaj gm = m.getMajs().get(0);
+                if (t == -1) {
+                    t = gm.getType();
+                } else {
+                    if (t != gm.getType()) {
+                        return null;
+                    }
+                }
             }
+            return Fan.QING_YI_SE;
         }
         return null;
     }

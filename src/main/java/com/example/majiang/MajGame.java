@@ -14,12 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Data
 @Slf4j
 public class MajGame {
     private MajTable table;
-    private static Map<String, List<HuMaj>> record = new HashMap<>();
+    private static Map<String, List<HuRecord>> record = new HashMap<>();
     public static AtomicInteger gameNum = new AtomicInteger(0);
     private Map<String, GameTmp> tmpInfos;
     /**
@@ -32,7 +33,8 @@ public class MajGame {
     private TableInfoHandler tableInfoHandler;
     private BaoPaiHandler baoPaiHandler;
     private HuValidHandler huValidHandler;
-    private GangValidHandler mingGangValidHandler;
+    private GangValidHandler getMajHandMingGangValidHandler;
+    private GangValidHandler showMingGangValidHandler;
     private GangValidHandler anGangValidHandler;
     private PengValidHandler pengValidHandler;
     private ChiValidHandler chiValidHandler;
@@ -43,7 +45,8 @@ public class MajGame {
         pointHandler = new DefaultCalPointHandler();
         tableInfoHandler = new DefaultTableInfoHandler();
         baoPaiHandler = new DefaultBaoPaiHandler();
-        mingGangValidHandler = new MingGangValidHandler();
+        getMajHandMingGangValidHandler = new GetMajHandMingGangValidHandler();
+        showMingGangValidHandler = new ShowMingGangValidHandler();
         anGangValidHandler = new AnGangValidHandler();
         pengValidHandler = new DefaultPengValidHandler();
         chiValidHandler = new DefaultChiValidHandler();
@@ -60,7 +63,7 @@ public class MajGame {
         }
     }
 
-    private void changeDealer(Integer winnerNo, List<Player<Maj, MajGroup>> players) {
+    private void changeDealer(List<Integer> winnerNo, List<Player<Maj, MajGroup>> players) {
         MajTableInfo tableInfo = tableInfoHandler.changeDealer(winnerNo, dealer, changFen, players.size());
         this.dealer = tableInfo.getDealer();
         this.changFen = tableInfo.getChangFeng();
@@ -86,20 +89,25 @@ public class MajGame {
     }
 
 
+    /**
+     * 功能实现了，但是代码还是不过优雅。
+     *
+     * @param players
+     */
     public void play(List<Player<Maj, MajGroup>> players) {
         try {
             prePlay(players);
             int no = dealer;
-            HuRecord huRecord;
             Maj currentMaj;
-            int shou = 0;
-            Integer winnerNo = null;
+            int roundNum = 0;
+            List<Integer> winnerNo = new ArrayList<>();
             boolean over = false;
+            Player<Maj, MajGroup> player;
+            loopTouch:
             while (table.canTouch() && !over) {
-                boolean discard = true;
-                shou++;
+                roundNum++;
                 // 当前获取player
-                Player<Maj, MajGroup> player = players.get(no % players.size());
+                player = players.get(no % players.size());
                 //摸牌
                 currentMaj = table.touch();
                 player.touch(currentMaj);
@@ -108,140 +116,142 @@ public class MajGame {
                  *摸牌时的game info
                  */
                 GameInfo touchGameInfo = buildGameInfo(players, player, currentMaj, true);
-                huRecord = validFan(player, touchGameInfo);
-                if (huRecord != null && huRecord.isHu()) {
-                    log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 自摸胡=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), shou, player.getName(), huRecord.getHuMaj(), buildFanString(huRecord.getFans()));
-                    //算自摸分
-                    pointHandler.checkZiMoPoint(player, players, huRecord);
-                    winnerNo = tmpInfos.get(player.getName()).getPlayerNo();
-                    //记录
-                    rec(huRecord);
-                    discard = false;
-                    /**
-                     * 自摸不存在一炮多响
-                     */
-                    break;
+                HuRecord zimohuRecord = validFan(player, touchGameInfo);
+                if (zimohuRecord != null && zimohuRecord.isHu()) {
+                    if (player.chooseHu(zimohuRecord, touchGameInfo)) {
+                        log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 自摸胡=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, player.getName(), zimohuRecord.getHuMaj(), buildFanString(zimohuRecord.getFans()));
+                        //算自摸分
+                        pointHandler.checkZiMoPoint(player, players, zimohuRecord);
+                        winnerNo.add(tmpInfos.get(player.getName()).getPlayerNo());
+                        //记录
+                        rec(zimohuRecord);
+                        /**
+                         * 自摸不存在一炮多响
+                         */
+                        break;
+                    }
                 }
-                GangRecord anGangRecord = validAnGang(player, touchGameInfo);
-                if (anGangRecord != null && anGangRecord.isGang()) {
-                    FuluRecord fuluRecord = player.chooseGang(anGangRecord, touchGameInfo);
-                    if (fuluRecord != null) {
+                List<GangRecord> gangs = validGang(player, touchGameInfo).stream().filter(GangRecord::isGang).collect(Collectors.toList());
+                if (gangs.size() > 0) {
+                    FuluObj fuluObj = player.chooseGang(gangs, touchGameInfo);
+                    if (fuluObj != null) {
                         /**
                          * 杠不会有多种选择
                          */
-                        player.addShow(anGangRecord.getRecords().get(0).getGroup(), anGangRecord.getRecords().get(0).getNeedRemoveHand());
+                        player.addShow(fuluObj.getGroup(), fuluObj.getNeedRemoveHand(), fuluObj.getNeedRemoveShow());
                         /**
                          * 杠完摸一张牌，并且开一张宝牌
                          */
-                        player.touch(table.touch());
                         baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
+                        continue loopTouch;
                     }
                 }
-                //弃牌
                 currentMaj = player.play(buildGameInfo(players, player, null, false));
-                for (int i = 1; i < players.size(); i++) {
-                    Player<Maj, MajGroup> other = players.get((no + i) % players.size());
-                    //判断没有没有放炮
-                    huRecord = validFan(other, currentMaj, buildGameInfo(players, other, currentMaj, false));
-                    if (huRecord != null && huRecord.isHu()) {
-                        log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 胡 {} 放炮=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), shou, other.getName(), player.getName(), huRecord.getHuMaj(), buildFanString(huRecord.getFans()));
-                        //算放炮分
-                        pointHandler.checkFangPaoPoint(other, player, huRecord);
-                        //记录
-                        rec(huRecord);
-                        winnerNo = tmpInfos.get(other.getName()).getPlayerNo();
-                        /**
-                         * 可能一炮多响，要把其他玩家都判断了。
-                         */
-                        discard = false;
-                        over = true;
-                    }
-                }
-                /**
-                 * 明杠
-                 */
-
-                boolean fulu = true;
-                for (int i = 1; i < players.size(); i++) {
-                    Player<Maj, MajGroup> other = players.get((no + i) % players.size());
-                    //判断没有没有放炮
-                    GangRecord mingGangRecord = validMingGang(other, buildGameInfo(players, other, currentMaj, false));
-                    if (mingGangRecord != null && mingGangRecord.isGang()) {
-                        fulu = false;
-                        /**
-                         * 碰不会有多种选择
-                         */
-                        FuluRecord fuluRecord = player.chooseGang(mingGangRecord, buildGameInfo(players, other, currentMaj, false));
-                        if (fuluRecord != null) {
-                            other.addShow(fuluRecord.getGroup(), fuluRecord.getNeedRemoveHand());
-                            /**
-                             * 杠完摸一张牌，并且开一张宝牌
-                             */
-                            other.touch(table.touch());
-                            baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
-
-                            //TODO 需要实现吃碰杠下 逻辑顺序的转换，之前逻辑行不通
-                            currentMaj = other.play(buildGameInfo(players, other, null, true));
-                            discard = false;
-                            /**
-                             * 不存在多个人都杠，所以一个人杠完就可以break
-                             */
-                            break;
-                        }
-                    }
-                }
-                /**
-                 * 碰
-                 */
-                if (fulu) {
+                boolean flag = true;
+                loopCPG:
+                while (flag) {
+                    player = players.get(no % players.size());
+                    //弃牌
                     for (int i = 1; i < players.size(); i++) {
-                        /**
-                         * 按顺序
-                         */
                         Player<Maj, MajGroup> other = players.get((no + i) % players.size());
                         //判断没有没有放炮
-                        PengRecord pengRecord = validPeng(other, buildGameInfo(players, other, currentMaj, false));
-                        if (pengRecord != null && pengRecord.isPeng()) {
-                            FuluRecord fuluRecord = player.choosePeng(pengRecord, buildGameInfo(players, other, currentMaj, false));
-                            if (fuluRecord != null) {
-                                other.addShow(fuluRecord.getGroup(), fuluRecord.getNeedRemoveHand());
-
-                                //todo 还需要打出一张牌
-                                fulu = false;
-                                discard = false;
+                        HuRecord fangpaohuRecord = validFan(other, currentMaj, buildGameInfo(players, other, currentMaj, false));
+                        if (fangpaohuRecord != null && fangpaohuRecord.isHu()) {
+                            if (other.chooseHu(fangpaohuRecord, buildGameInfo(players, other, currentMaj, false))) {
+                                log.info("第{}局,场风{}庄家{},宝牌{},{}手,{} 胡 {} 放炮=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, other.getName(), player.getName(), fangpaohuRecord.getHuMaj(), buildFanString(fangpaohuRecord.getFans()));
+                                //算放炮分
+                                pointHandler.checkFangPaoPoint(other, player, fangpaohuRecord);
+                                //记录
+                                rec(fangpaohuRecord);
+                                winnerNo.add(tmpInfos.get(other.getName()).getPlayerNo());
+                                /**
+                                 * 可能一炮多响，要把其他玩家都判断了。
+                                 */
+                                over = true;
                                 break;
                             }
                         }
                     }
-                }
-                /**
-                 * 吃
-                 */
-                if (fulu) {
                     /**
-                     * 按顺序
+                     * 明杠
                      */
-                    Player<Maj, MajGroup> nextPlayer = players.get((no + 1) % players.size());
+                    for (int i = 1; i < players.size(); i++) {
+                        int cno = (no + i) % players.size();
+                        Player<Maj, MajGroup> other = players.get(cno);
+                        //判断没有没有放炮
+                        List<GangRecord> mingGangRecords = validMingGang(other, buildGameInfo(players, other, currentMaj, false));
+                        if (mingGangRecords.size() > 0) {
+                            GangRecord mingGangRecord = mingGangRecords.get(0);
+                            if (mingGangRecord.isGang()) {
+                                /**
+                                 * 碰不会有多种选择
+                                 */
+                                FuluObj fuluObj = other.chooseGang(Arrays.asList(mingGangRecord), buildGameInfo(players, other, currentMaj, false));
+                                if (fuluObj != null) {
+                                    other.addShow(fuluObj.getGroup(), fuluObj.getNeedRemoveHand());
+                                    /**
+                                     * 杠完摸一张牌，并且开一张宝牌
+                                     */
+                                    baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
+                                    /**
+                                     * 不存在多个人都杠，所以一个人杠完就可以break
+                                     */
+                                    no = cno;
+                                    continue loopTouch;
+                                }
+
+                            }
+                        }
+                    }
+                    /**
+                     * 碰
+                     */
+                    for (int i = 1; i < players.size(); i++) {
+                        /**
+                         * 按顺序
+                         */
+                        int cno = (no + i) % players.size();
+                        Player<Maj, MajGroup> other = players.get(cno);
+                        //判断没有没有放炮
+                        PengRecord pengRecord = validPeng(other, buildGameInfo(players, other, currentMaj, false));
+                        if (pengRecord != null && pengRecord.isPeng()) {
+                            FuluObj fuluObj = other.choosePeng(pengRecord, buildGameInfo(players, other, currentMaj, false));
+                            if (fuluObj != null) {
+                                other.addShow(fuluObj.getGroup(), fuluObj.getNeedRemoveHand());
+                                currentMaj = other.play(buildGameInfo(players, other, currentMaj, false));
+                                no = cno;
+                                continue loopCPG;
+                            }
+                        }
+                    }
+                    /**
+                     * 下一家 判断吃
+                     */
+
+                    int cno = (no + 1) % players.size();
+                    Player<Maj, MajGroup> nextPlayer = players.get(cno);
                     //判断没有没有放炮
                     ChiRecord chiRecord = validChi(nextPlayer, buildGameInfo(players, nextPlayer, currentMaj, false));
                     if (chiRecord != null && chiRecord.isChi()) {
-                        FuluRecord fuluRecord = player.chooseChi(chiRecord, buildGameInfo(players, nextPlayer, currentMaj, false));
-                        if (fuluRecord != null) {
+                        FuluObj fuluObj = nextPlayer.chooseChi(chiRecord, buildGameInfo(players, nextPlayer, currentMaj, false));
+                        if (fuluObj != null) {
+                            nextPlayer.addShow(fuluObj.getGroup(), fuluObj.getNeedRemoveHand());
+                            currentMaj = nextPlayer.play(buildGameInfo(players, nextPlayer, currentMaj, false));
+                            no = cno;
+                            continue loopCPG;
                             /**
                              * 可能一炮多响，要把其他玩家都判断了。
                              */
-                            discard = false;
+//                                discard = false;
                         }
 
                     }
+                    flag = false;
                 }
-
                 /**
                  * 如果没有被胡吃碰杠，就进入弃牌堆
                  */
-                if (discard) {
-                    player.addDiscard(currentMaj);
-                }
+                players.get(no).addDiscard(currentMaj);
                 //这一手结束，加1
                 no = (++no >= players.size()) ? no % players.size() : no;
             }//这把打完，判断是否换庄
@@ -264,17 +274,16 @@ public class MajGame {
         return pengValidHandler.validPeng(hand, gameInfo);
     }
 
-
-    private GangRecord validAnGang(Player<Maj, MajGroup> player, GameInfo touchGameInfo) {
-        List<Maj> hand = player.getHand();
-        return anGangValidHandler.validGang(hand, touchGameInfo);
+    private List<GangRecord> validGang(Player<Maj, MajGroup> player, GameInfo touchGameInfo) {
+        List<GangRecord> res = new ArrayList<>();
+        res.add(anGangValidHandler.validGang(player, touchGameInfo));
+        res.add(showMingGangValidHandler.validGang(player, touchGameInfo));
+        return res;
     }
 
-    private GangRecord validMingGang(Player<Maj, MajGroup> player, GameInfo touchGameInfo) {
-        List<Maj> hand = player.getHand();
-        return mingGangValidHandler.validGang(hand, touchGameInfo);
+    private List<GangRecord> validMingGang(Player<Maj, MajGroup> player, GameInfo touchGameInfo) {
+        return Arrays.asList(getMajHandMingGangValidHandler.validGang(player, touchGameInfo));
     }
-
 
     //-----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -369,8 +378,8 @@ public class MajGame {
 
     private void rec(HuRecord huRecord) {
         for (Fan fan : huRecord.getFans()) {
-            List<HuMaj> list = record.getOrDefault(fan.getType(), new ArrayList<>());
-            list.add(huRecord.getHuMaj());
+            List<HuRecord> list = record.getOrDefault(fan.getType(), new ArrayList<>());
+            list.add(huRecord);
             record.put(fan.getType(), list);
         }
     }

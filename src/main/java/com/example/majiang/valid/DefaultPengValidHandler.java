@@ -16,7 +16,7 @@ public class DefaultPengValidHandler implements PengValidHandler {
     @Override
     public PengRecord validPeng(List<Maj> hand, GameInfo gameInfo) {
         Maj currentMaj = gameInfo.getCurrentMaj();
-        int num = 2;
+        int num = 0;
         for (Maj maj : hand) {
             if (maj.equals(currentMaj)) {
                 num++;
@@ -24,7 +24,7 @@ public class DefaultPengValidHandler implements PengValidHandler {
             if (num == 2) {
                 List<GroupMaj> groupMajs = Arrays.asList(new GroupMaj(maj, true), new GroupMaj(maj), new GroupMaj(maj));
                 List<Maj> discard = Arrays.asList(new GroupMaj(maj), new GroupMaj(maj));
-                return new PengRecord(true, new FuluRecord(new MajGroup(MajGroup.MING_KE, groupMajs), discard));
+                return new PengRecord(true, new FuluObj(new MajGroup(MajGroup.MING_KE, groupMajs), discard));
             }
         }
         return new PengRecord(false);

@@ -38,6 +38,11 @@ public class MajGroup {
     }
 
     @Override
+    public String toString() {
+        return majs.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -59,8 +64,11 @@ public class MajGroup {
         for (Maj m : majs) {
             int type = m.getType();
             int content = m.getContent();
-            if (type == Maj.ZI) return true;
-            else if (content == 0 || content == 8) return true;
+            if (type == Maj.ZI) {
+                return true;
+            } else if (content == 0 || content == 8) {
+                return true;
+            }
         }
         return false;
     }

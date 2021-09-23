@@ -16,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class PengRecord {
     private boolean peng;
-    private List<FuluRecord> records;
+    private List<FuluObj> records;
 
-    public PengRecord(boolean peng, FuluRecord... record) {
+    public PengRecord(boolean peng, FuluObj... record) {
         this.peng = peng;
         this.records = Arrays.asList(record);
     }

@@ -16,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ChiRecord {
     private boolean chi;
-    private List<FuluRecord> records;
+    private List<FuluObj> records;
 
-    public ChiRecord(boolean chi, FuluRecord... record) {
+    public ChiRecord(boolean chi, FuluObj... record) {
         this.records = Arrays.asList(record);
     }
 

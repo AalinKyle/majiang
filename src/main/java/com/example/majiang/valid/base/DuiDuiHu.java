@@ -5,6 +5,7 @@ import com.example.majiang.valid.Hu;
 import com.example.majiang.valid.HuValid;
 
 import java.util.List;
+
 @Hu
 public class DuiDuiHu implements HuValid {
 
@@ -52,14 +53,11 @@ public class DuiDuiHu implements HuValid {
                 else qt = true;
             }
         }
+        /**
+         * 除去顺子都是
+         */
         ShowEswnzfbx eswnzfbx = parseShow(show);
-        if (eswnzfbx.getGroupNum() > 0) {
-            dui += eswnzfbx.getWanMingKe();
-            dui += eswnzfbx.getSuoMingKe();
-            dui += eswnzfbx.getTongMingKe();
-            dui += eswnzfbx.getFengMingKe();
-            dui += eswnzfbx.getYiMingKe();
-        }
+        dui += eswnzfbx.getGroupNum() - (eswnzfbx.getSuoShunZi() + eswnzfbx.getWanShunZi() + eswnzfbx.getTongShunZi());
 
         return dui == 4 && qt ? Fan.DUI_DUI_HU : null;
     }

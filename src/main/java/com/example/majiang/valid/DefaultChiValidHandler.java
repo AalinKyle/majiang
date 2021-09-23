@@ -23,9 +23,9 @@ public class DefaultChiValidHandler implements ChiValidHandler {
         if (type == Maj.ZI) {
             return new ChiRecord(false);
         } else {
-            List<FuluRecord> list = new ArrayList<>();
+            List<FuluObj> list = new ArrayList<>();
             for (int[] t : T) {
-                FuluRecord check = check(currentMaj, hand, t);
+                FuluObj check = check(currentMaj, hand, t);
                 if (check != null) {
                     list.add(check);
                 }
@@ -38,7 +38,7 @@ public class DefaultChiValidHandler implements ChiValidHandler {
             {0, 1, 2}, {-1, 0, 1}, {-2, -1, 0}
     };
 
-    private FuluRecord check(Maj maj, List<Maj> hand, int[] t) {
+    private FuluObj check(Maj maj, List<Maj> hand, int[] t) {
         int type = maj.getType();
         int content = maj.getContent();
         List<Maj> needRemove = new ArrayList<>();
@@ -53,11 +53,20 @@ public class DefaultChiValidHandler implements ChiValidHandler {
             }
             groupMajs.add(new GroupMaj(type, index, tt == 0));
         }
-        if (hand.containsAll(needRemove)) {
+        if (contains(hand, needRemove)) {
             MajGroup majGroup = new MajGroup(MajGroup.SHUN_ZI, groupMajs);
-            return new FuluRecord(majGroup, needRemove);
+            return new FuluObj(majGroup, needRemove);
         } else {
             return null;
         }
+    }
+
+    private boolean contains(List<Maj> hand, List<Maj> needRemove) {
+        for (Maj maj : needRemove) {
+            if (!hand.contains(maj)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

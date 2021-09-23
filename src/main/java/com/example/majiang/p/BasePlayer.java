@@ -1,11 +1,8 @@
 package com.example.majiang.p;
 
-import com.example.majiang.GameInfo;
-import com.example.majiang.Maj;
-import com.example.majiang.MajGroup;
-import com.example.majiang.User;
+import com.example.majiang.*;
 import com.example.majiang.valid.ChiRecord;
-import com.example.majiang.valid.FuluRecord;
+import com.example.majiang.valid.FuluObj;
 import com.example.majiang.valid.GangRecord;
 import com.example.majiang.valid.PengRecord;
 import lombok.Data;
@@ -20,9 +17,11 @@ import java.util.Random;
 @Data
 @Slf4j
 @NoArgsConstructor
+/**
+ * @author kyle
+ * */
 public class BasePlayer implements Player<Maj, MajGroup> {
-
-    private User user;
+    protected User user;
 
     @Override
     public void addPoint(int n) {
@@ -35,17 +34,32 @@ public class BasePlayer implements Player<Maj, MajGroup> {
      */
     @Override
     public void addShow(MajGroup group, List<Maj> discard) {
-        show.add(group);
-        hand.removeAll(discard);
+        addShow(group, discard, null);
     }
 
-    private String name;
-    private boolean enableLog;
-    private List<Maj> hand;
-    private List<MajGroup> show;
-    private List<Maj> discard;
+    @Override
+    public void addShow(MajGroup group, List<Maj> discard, List<MajGroup> needRemoveShow) {
 
-    private Comparator<Maj> sort;
+        if (discard != null && discard.size() > 0) {
+            for (Maj maj : discard) {
+                hand.remove(maj);
+            }
+        }
+        if (needRemoveShow != null && needRemoveShow.size() > 0) {
+            for (MajGroup gm : needRemoveShow) {
+                show.remove(gm);
+            }
+        }
+        show.add(group);
+    }
+
+    protected String name;
+    protected boolean enableLog;
+    protected List<Maj> hand;
+    protected List<MajGroup> show;
+    protected List<Maj> discard;
+    protected Random random = new Random();
+    protected Comparator<Maj> sort;
 
     @Override
     public List<Maj> getHand() {
@@ -54,42 +68,37 @@ public class BasePlayer implements Player<Maj, MajGroup> {
 
     public BasePlayer(User user, Comparator<Maj> sort, boolean enableLog) {
         this.name = user.getName();
-        hand = new LinkedList<>();
-        show = new LinkedList<>();
-        discard = new LinkedList<>();
         this.sort = sort;
         this.enableLog = enableLog;
         this.user = user;
+        initMajs();
+    }
+
+    /**
+     * 初始化牌区
+     */
+    private void initMajs() {
+        hand = new LinkedList<>();
+        show = new LinkedList<>();
+        discard = new LinkedList<>();
     }
 
     public BasePlayer(User user, Comparator<Maj> sort) {
         this(user, sort, false);
     }
 
+
     @Override
-    public void touch(Maj maj) {
-        touch(maj, sort);
+    public void over() {
+        initMajs();
+        info("--------------------------------------------------------------------");
     }
 
-    @Override
-    public void touch(Maj maj, Comparator<Maj> sort) {
-        info("{}=>摸了{}", name, maj);
-        hand.add(maj);
-        hand.sort(sort);
-    }
-
-    private Random random = new Random();
 
     @Override
-    public Maj play(GameInfo gameInfo) {
-        Maj play = hand.remove(random.nextInt(hand.size()));
-        info("{}=>打出了{}", name, play);
-        return play;
-    }
-
-    @Override
-    public void addDiscard(Maj t) {
-        discard.add(t);
+    public void addDiscard(Maj maj) {
+        info("{}=>弃了{}=>{}", name, maj, hand);
+        discard.add(maj);
     }
 
     protected void info(String str, Object... arg) {
@@ -99,16 +108,34 @@ public class BasePlayer implements Player<Maj, MajGroup> {
     }
 
     @Override
-    public void over() {
-        hand = new LinkedList<>();
-        show = new LinkedList<>();
-        discard = new LinkedList<>();
+    public void touch(Maj maj) {
+        touch(maj, sort);
     }
 
     @Override
-    public FuluRecord chooseGang(GangRecord record, GameInfo gameInfo) {
-        if (record != null && record.isGang()) {
-            return record.getRecords().get(0);
+    public void touch(Maj maj, Comparator<Maj> sort) {
+        info("{}=>摸了{}=>{}", name, maj, hand);
+        hand.add(maj);
+        hand.sort(sort);
+    }
+
+    @Override
+    public Maj play(GameInfo gameInfo) {
+        if (hand.size() < 2) {
+            info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx{}", name);
+        }
+        int index = random.nextInt(hand.size());
+        info("{}=>打出了{}=>{},{}", name, hand.get(index), hand, hand.size());
+        Maj play = hand.remove(index);
+
+        return play;
+    }
+
+    @Override
+    public FuluObj chooseGang(List<GangRecord> records, GameInfo gameInfo) {
+        if (records != null && records.size() > 0) {
+            info("{}杠了{}=>{}", name, records.get(0).getRecords().get(0), hand);
+            return records.get(0).getRecords().get(0);
         } else {
             return null;
         }
@@ -116,8 +143,9 @@ public class BasePlayer implements Player<Maj, MajGroup> {
     }
 
     @Override
-    public FuluRecord choosePeng(PengRecord record, GameInfo gameInfo) {
+    public FuluObj choosePeng(PengRecord record, GameInfo gameInfo) {
         if (record != null && record.isPeng()) {
+            info("{}碰了{}=>{}", name, record.getRecords().get(0), hand);
             return record.getRecords().get(0);
         } else {
             return null;
@@ -125,11 +153,17 @@ public class BasePlayer implements Player<Maj, MajGroup> {
     }
 
     @Override
-    public FuluRecord chooseChi(ChiRecord record, GameInfo gameInfo) {
+    public FuluObj chooseChi(ChiRecord record, GameInfo gameInfo) {
         if (record != null && record.isChi()) {
+            info("{}吃了{}=>{}", name, record.getRecords().get(0), hand);
             return record.getRecords().get(0);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean chooseHu(HuRecord huRecord, GameInfo touchGameInfo) {
+        return true;
     }
 }

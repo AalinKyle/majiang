@@ -13,9 +13,15 @@ import java.util.List;
  * @create 2021/9/22 17:11
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class FuluRecord {
+@AllArgsConstructor
+public class FuluObj {
     protected MajGroup group;
     protected List<Maj> needRemoveHand;
+    protected List<MajGroup> needRemoveShow;
+
+    public FuluObj(MajGroup group, List<Maj> needRemoveHand) {
+        this.group = group;
+        this.needRemoveHand = needRemoveHand;
+    }
 }

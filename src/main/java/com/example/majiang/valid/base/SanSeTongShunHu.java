@@ -6,6 +6,7 @@ import com.example.majiang.valid.HuValid;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Hu
 public class SanSeTongShunHu implements HuValid {
     @Override
@@ -35,10 +36,14 @@ public class SanSeTongShunHu implements HuValid {
     }
 
     private boolean tongsun(MajGroup m1, MajGroup m2) {
-        if (m1.getType() != MajGroup.SHUN_ZI || m2.getType() != MajGroup.SHUN_ZI) return false;
-        List<Maj> majs1 = m1.getMajs();
-        List<Maj> majs2 = m2.getMajs();
-        if (majs1.get(0).getType() == majs2.get(0).getType()) return false;
+        if (m1.getType() != MajGroup.SHUN_ZI || m2.getType() != MajGroup.SHUN_ZI) {
+            return false;
+        }
+        List<GroupMaj> majs1 = m1.getMajs();
+        List<GroupMaj> majs2 = m2.getMajs();
+        if (majs1.get(0).getType() == majs2.get(0).getType()) {
+            return false;
+        }
         for (int i = 0; i < majs1.size(); i++) {
             if (majs1.get(i).getContent() != majs2.get(i).getContent()) {
                 return false;

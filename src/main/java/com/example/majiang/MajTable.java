@@ -68,7 +68,7 @@ public class MajTable {
         }
     }
     public boolean canTouch() {
-       return pool.size() > 0;
+       return pool.size() > 10;
     }
 
 

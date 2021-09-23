@@ -12,7 +12,7 @@ import java.util.List;
  * @Author kyle
  * @create 2021/9/22 16:38
  */
-public class AnGangValidHandler extends BaseGangValidHandler {
+public class GetMajHandMingGangValidHandler extends BaseGangValidHandler {
 
     @Override
     public GangRecord validGang(Player<Maj, MajGroup> player, GameInfo gameInfo) {
@@ -21,49 +21,35 @@ public class AnGangValidHandler extends BaseGangValidHandler {
         Maj current = gameInfo.getCurrentMaj();
         int type = current.getType();
         int content = current.getContent();
-
         switch (type) {
             case Maj.WAN: {
                 int[] wan = hmd.getWan();
                 /**
                  *明杠 手牌里有3张
                  */
-                if (wan[content] == canGangNum + 1) {
-                    /**
-                     *暗杠 手牌里有4张
-                     */
-                    return new GangRecord(true, false, new FuluObj(new MajGroup(MajGroup.AN_GANG, getGroupMajs(current, false)), getNeedRemove(current, false)));
+                if (wan[content] == canGangNum) {
+                    return new GangRecord(true, true, new FuluObj(new MajGroup(MajGroup.AN_GANG, getGroupMajs(current, true)), getNeedRemove(current, true)));
                 }
                 break;
             }
             case Maj.TONG: {
                 int[] tong = hmd.getTong();
-                if (tong[content] == canGangNum + 1) {
-                    /**
-                     *暗杠 手牌里有4张
-                     */
-                    return new GangRecord(true, false, new FuluObj(new MajGroup(MajGroup.AN_GANG, getGroupMajs(current, false)), getNeedRemove(current, false)));
+                if (tong[content] == canGangNum) {
+                    return new GangRecord(true, true, new FuluObj(new MajGroup(MajGroup.MING_GANG, getGroupMajs(current, true)), getNeedRemove(current, true)));
                 }
-
                 break;
             }
             case Maj.SUO: {
                 int[] suo = hmd.getSuo();
-                if (suo[content] == canGangNum + 1) {
-                    /**
-                     *暗杠 手牌里有4张
-                     */
-                    return new GangRecord(true, false, new FuluObj(new MajGroup(MajGroup.AN_GANG, getGroupMajs(current, false)), getNeedRemove(current, false)));
+                if (suo[content] == canGangNum) {
+                    return new GangRecord(true, true, new FuluObj(new MajGroup(MajGroup.MING_GANG, getGroupMajs(current, true)), getNeedRemove(current, true)));
                 }
                 break;
             }
             case Maj.ZI: {
                 int[] zi = hmd.getZi();
-                if (zi[content] == canGangNum + 1) {
-                    /**
-                     *暗杠 手牌里有4张
-                     */
-                    return new GangRecord(true, false, new FuluObj(new MajGroup(MajGroup.AN_GANG, getGroupMajs(current, false)), getNeedRemove(current, false)));
+                if (zi[content] == canGangNum) {
+                    return new GangRecord(true, true, new FuluObj(new MajGroup(MajGroup.MING_GANG, getGroupMajs(current, true)), getNeedRemove(current, true)));
                 }
                 break;
             }

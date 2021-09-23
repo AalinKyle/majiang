@@ -15,19 +15,19 @@ import java.util.List;
 public class GangRecord {
     protected boolean gang;
     protected boolean mingGang;
-    private List<FuluRecord> records;
+    private List<FuluObj> records;
 
     public GangRecord(boolean gang) {
         this.gang = gang;
     }
 
-    public GangRecord(boolean gang, boolean mingGang, FuluRecord... records) {
+    public GangRecord(boolean gang, boolean mingGang, FuluObj... records) {
         this.gang = gang;
         this.mingGang = mingGang;
         this.records = Arrays.asList(records);
     }
 
-    public GangRecord(boolean gang, boolean mingGang, List<FuluRecord> records) {
+    public GangRecord(boolean gang, boolean mingGang, List<FuluObj> records) {
         this.gang = gang;
         this.mingGang = mingGang;
         this.records = records;

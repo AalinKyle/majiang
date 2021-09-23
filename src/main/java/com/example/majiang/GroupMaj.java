@@ -2,6 +2,8 @@ package com.example.majiang;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * @Author kyle
  * @create 2021/9/22 17:04
@@ -26,4 +28,19 @@ public class GroupMaj extends Maj {
     }
 
     private boolean outGet;
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), outGet);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

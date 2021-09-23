@@ -80,7 +80,7 @@ public class BasePreHuValid implements PreHuValid {
                 if (majs[i] > 2) {
                     majs[i] -= 3;
                     gpn.gs++;
-                    mgs.add(new MajGroup(MajGroup.MING_KE, Arrays.asList(new Maj(type, i), new Maj(type, i), new Maj(type, i))));
+                    mgs.add(new MajGroup(MajGroup.MING_KE, Arrays.asList(new GroupMaj(type, i), new GroupMaj(type, i), new GroupMaj(type, i))));
                     if (bfs(majs, i, gpn, haveSunZi, mgs, type)) {
                         return true;
                     } else {
@@ -92,7 +92,7 @@ public class BasePreHuValid implements PreHuValid {
                 if (majs[i] > 1 && gpn.qt == 0) {
                     majs[i] -= 2;
                     gpn.qt++;
-                    mgs.add(new MajGroup(MajGroup.QT, Arrays.asList(new Maj(type, i), new Maj(type, i))));
+                    mgs.add(new MajGroup(MajGroup.QT, Arrays.asList(new GroupMaj(type, i), new GroupMaj(type, i))));
                     if (bfs(majs, i, gpn, haveSunZi, mgs, type)) {
                         return true;
                     } else {
@@ -105,7 +105,7 @@ public class BasePreHuValid implements PreHuValid {
                     majs[i]--;
                     majs[i + 1]--;
                     majs[i + 2]--;
-                    mgs.add(new MajGroup(MajGroup.QT, Arrays.asList(new Maj(type, i), new Maj(type, i + 1), new Maj(type, i + 2))));
+                    mgs.add(new MajGroup(MajGroup.QT, Arrays.asList(new GroupMaj(type, i), new GroupMaj(type, i + 1), new GroupMaj(type, i + 2))));
                     gpn.gs++;
                     if (bfs(majs, i, gpn, haveSunZi, mgs, type)) {
                         return true;

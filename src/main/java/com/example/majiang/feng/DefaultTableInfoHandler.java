@@ -1,5 +1,7 @@
 package com.example.majiang.feng;
 
+import java.util.List;
+
 public class DefaultTableInfoHandler implements TableInfoHandler {
     @Override
     public int calZiFeng(int playerNo, int dealer) {
@@ -7,9 +9,9 @@ public class DefaultTableInfoHandler implements TableInfoHandler {
     }
 
     @Override
-    public MajTableInfo changeDealer(Integer winnerNo, int currentDealer,int currentChangFeng,int playerNum) {
+    public MajTableInfo changeDealer(List<Integer> winnerNo, int currentDealer, int currentChangFeng, int playerNum) {
         if (winnerNo != null) {
-            if (currentDealer != winnerNo) {
+            if (!winnerNo.contains(currentDealer)) {
                 currentDealer++;
                 if (currentDealer == playerNum) {
                     currentChangFeng = (currentChangFeng + 1) % 4;
@@ -17,6 +19,6 @@ public class DefaultTableInfoHandler implements TableInfoHandler {
                 currentDealer %= playerNum;
             }
         }
-        return new MajTableInfo(currentDealer,currentChangFeng);
+        return new MajTableInfo(currentDealer, currentChangFeng);
     }
 }

@@ -18,10 +18,10 @@ public class HunLaoTouHu implements HuValid {
                 return null;
             }
         }
-        for (MajGroup majGroup : list) {
+        for (MajGroup majGroup : show) {
             List<GroupMaj> majs = majGroup.getMajs();
             for (Maj m : majs) {
-                if (m.getType() != 3) {
+                if (m.getType() != Maj.ZI) {
                     if (m.getContent() != 0 && m.getContent() != 8) {
                         return null;
                     }

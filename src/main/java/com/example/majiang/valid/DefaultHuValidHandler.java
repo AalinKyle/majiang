@@ -58,7 +58,8 @@ public class DefaultHuValidHandler implements HuValidHandler {
         boolean hu = false;
         boolean isYiMan = false;
         List<Fan> resFans = new ArrayList<>();
-        for (Fan fan : fans) {
+        for (int i = 0; i < fans.size(); i++) {
+            Fan fan = fans.get(i);
             if (fan != null) {
                 if (fan.isCanHu()) {
                     hu = true;
@@ -82,7 +83,7 @@ public class DefaultHuValidHandler implements HuValidHandler {
             }
         }
         if (fans.size() > 0) {
-            return new HuRecord().setYiMan(isYiMan).setHu(hu).setHuTime(new Date()).setFans(resFans).setHuMaj(new HuMaj(majs, show, discard));
+            return new HuRecord().setYiMan(isYiMan).setHu(hu).setHuTime(new Date()).setFans(resFans).setHuMaj(new HuMaj(majs, show, discard, gameInfo.getCurrentMaj()));
         } else {
             return null;
         }
