@@ -20,5 +20,5 @@ public class GameInfo {
     private List<Maj> baoPai;
     private Map<Integer, PlayerTableInfo> playerTableInfos;
     private boolean zimo;
-    private Maj current;
+    private Maj currentMaj;
 }

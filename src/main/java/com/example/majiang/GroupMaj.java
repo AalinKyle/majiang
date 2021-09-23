@@ -13,8 +13,16 @@ public class GroupMaj extends Maj {
         this.outGet = outGet;
     }
 
+    public GroupMaj(Maj maj) {
+        this(maj.getType(), maj.getContent());
+    }
+
+    public GroupMaj(Maj maj, boolean outGet) {
+        this(maj.getType(), maj.getContent(), outGet);
+    }
+
     public GroupMaj(int type, int content) {
-      this(type,content,false);
+        this(type, content, false);
     }
 
     private boolean outGet;

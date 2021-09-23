@@ -1,11 +1,9 @@
 package com.example.majiang.valid;
 
-import com.example.majiang.Maj;
-import com.example.majiang.MajGroup;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,18 +12,24 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class GangRecord extends FuluRecord {
+public class GangRecord {
     protected boolean gang;
     protected boolean mingGang;
+    private List<FuluRecord> records;
 
     public GangRecord(boolean gang) {
         this.gang = gang;
     }
 
-    public GangRecord(boolean gang, boolean mingGang, MajGroup group, List<Maj> needRemoveHand) {
-        super(group, needRemoveHand);
+    public GangRecord(boolean gang, boolean mingGang, FuluRecord... records) {
         this.gang = gang;
         this.mingGang = mingGang;
+        this.records = Arrays.asList(records);
+    }
+
+    public GangRecord(boolean gang, boolean mingGang, List<FuluRecord> records) {
+        this.gang = gang;
+        this.mingGang = mingGang;
+        this.records = records;
     }
 }

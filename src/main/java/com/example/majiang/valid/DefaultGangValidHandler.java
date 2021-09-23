@@ -16,7 +16,7 @@ public abstract class DefaultGangValidHandler implements GangValidHandler {
     @Override
     public GangRecord validGang(List<Maj> hand, GameInfo gameInfo) {
         int canGangNum = 3;
-        Maj current = gameInfo.getCurrent();
+        Maj current = gameInfo.getCurrentMaj();
         HandMajDistribution hmd = new HandMajDistribution(hand);
         int type = current.getType();
         int content = current.getContent();
@@ -41,28 +41,28 @@ public abstract class DefaultGangValidHandler implements GangValidHandler {
             case Maj.WAN: {
                 int[] wan = hmd.getWan();
                 if (wan[content] == canGangNum) {
-                    return new GangRecord(true, isMangGang(), new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove);
+                    return new GangRecord(true, isMangGang(), new FuluRecord(new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove));
                 }
                 break;
             }
             case Maj.TONG: {
                 int[] tong = hmd.getTong();
                 if (tong[content] == canGangNum) {
-                    return new GangRecord(true, isMangGang(), new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove);
+                    return new GangRecord(true, isMangGang(), new FuluRecord(new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove));
                 }
                 break;
             }
             case Maj.SUO: {
                 int[] suo = hmd.getSuo();
                 if (suo[content] == canGangNum) {
-                    return new GangRecord(true, isMangGang(), new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove);
+                    return new GangRecord(true, isMangGang(), new FuluRecord(new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove));
                 }
                 break;
             }
             case Maj.ZI: {
                 int[] zi = hmd.getZi();
                 if (zi[content] == canGangNum) {
-                    return new GangRecord(true, isMangGang(), new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove);
+                    return new GangRecord(true, isMangGang(), new FuluRecord(new MajGroup(isMangGang() ? MajGroup.MING_KE : MajGroup.AN_GANG, groups), needRemove));
                 }
                 break;
             }

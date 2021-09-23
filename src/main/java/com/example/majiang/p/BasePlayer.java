@@ -4,6 +4,10 @@ import com.example.majiang.GameInfo;
 import com.example.majiang.Maj;
 import com.example.majiang.MajGroup;
 import com.example.majiang.User;
+import com.example.majiang.valid.ChiRecord;
+import com.example.majiang.valid.FuluRecord;
+import com.example.majiang.valid.GangRecord;
+import com.example.majiang.valid.PengRecord;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,5 +103,33 @@ public class BasePlayer implements Player<Maj, MajGroup> {
         hand = new LinkedList<>();
         show = new LinkedList<>();
         discard = new LinkedList<>();
+    }
+
+    @Override
+    public FuluRecord chooseGang(GangRecord record, GameInfo gameInfo) {
+        if (record != null && record.isGang()) {
+            return record.getRecords().get(0);
+        } else {
+            return null;
+        }
+
+    }
+
+    @Override
+    public FuluRecord choosePeng(PengRecord record, GameInfo gameInfo) {
+        if (record != null && record.isPeng()) {
+            return record.getRecords().get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public FuluRecord chooseChi(ChiRecord record, GameInfo gameInfo) {
+        if (record != null && record.isChi()) {
+            return record.getRecords().get(0);
+        } else {
+            return null;
+        }
     }
 }
