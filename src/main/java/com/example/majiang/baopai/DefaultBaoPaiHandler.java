@@ -18,13 +18,13 @@ public class DefaultBaoPaiHandler implements BaoPaiHandler {
 
     @Override
     public Maj touchOpeningBaoPai() {
-        Maj touch = table.touch();
+        Maj touch = table.touchBaoPai();
         return next(touch);
     }
 
     @Override
     public Maj touchGangBaoPai() {
-        Maj touch = table.touch();
+        Maj touch = table.touchBaoPai();
         return next(touch);
     }
 

@@ -54,6 +54,11 @@ public class SiAnKeHu implements HuValid {
         }
         ShowEswnzfbx eswnzfbx = parseShow(show);
         dui += eswnzfbx.getAnGangNum();
-        return dui == 4 && qt ? Fan.SI_AN_KE : null;
+        if (dui == 4 && qt) {
+            return Fan.SI_AN_KE;
+        } else {
+            return null;
+        }
+
     }
 }

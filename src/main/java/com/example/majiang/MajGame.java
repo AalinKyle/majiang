@@ -81,6 +81,7 @@ public class MajGame {
         initTmpInfos(players);
         table = new MajTable();
         table.shuffle();
+        table.putMajs();
         table.addPlayers(players);
         table.deal();
         baoPaiHandler.init(table);
@@ -90,6 +91,23 @@ public class MajGame {
         baoPaiHandler.putBaoPai(baoPaiHandler.touchOpeningBaoPai());
     }
 
+    private int gangNum = 0;
+    private List<Integer> gangPlayerNos;
+
+    private void initGangs() {
+        gangNum = 0;
+        gangPlayerNos = new ArrayList<>();
+    }
+
+    private boolean addGang(Integer no) {
+        gangNum++;
+        gangPlayerNos.add(no);
+        if (gangNum <= 4 && gangPlayerNos.size() >= 2) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     /**
      * 功能实现了，但是代码还是不过优雅。
@@ -105,13 +123,20 @@ public class MajGame {
             List<Integer> winnerNo = new ArrayList<>();
             boolean over = false;
             Player<Maj, MajGroup> player;
+            boolean touchGang = false;
+            boolean mingGang = false;
+            initGangs();
             loopTouch:
             while (table.canTouch() && !over) {
                 roundNum++;
                 // 当前获取player
                 player = players.get(no % players.size());
                 //摸牌
-                currentMaj = table.touch();
+                if (touchGang) {
+                    currentMaj = table.touchGang();
+                } else {
+                    currentMaj = table.touch();
+                }
                 player.touch(currentMaj);
                 //判断有没有自摸
                 /**
@@ -135,6 +160,7 @@ public class MajGame {
                 }
                 List<GangRecord> gangs = validGang(player, touchGameInfo).stream().filter(GangRecord::isGang).collect(Collectors.toList());
                 if (gangs.size() > 0) {
+                    mingGang = gangs.get(0).isMingGang();
                     FuluObj fuluObj = player.chooseGang(gangs, touchGameInfo);
                     if (fuluObj != null) {
                         /**
@@ -142,13 +168,28 @@ public class MajGame {
                          */
                         player.addShow(fuluObj.getGroup(), fuluObj.getNeedRemoveHand(), fuluObj.getNeedRemoveShow());
                         /**
-                         * 杠完摸一张牌，并且开一张宝牌
+                         * 暗杠直接开一张宝牌
                          */
-                        baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
+                        if (!mingGang) {
+                            baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
+                        }
+                        touchGang = true;
+                        if (!addGang(tmpInfos.get(player.getName()).getPlayerNo())) {
+                            return;
+                        }
                         continue loopTouch;
                     }
                 }
                 currentMaj = player.play(buildGameInfo(players, player, null, false));
+                /**
+                 * 明杠在摸完杠牌再弃牌后才会摸宝牌
+                 */
+                if (touchGang) {
+                    touchGang = false;
+                    if (mingGang) {
+                        baoPaiHandler.putBaoPai(baoPaiHandler.touchGangBaoPai());
+                    }
+                }
                 boolean flag = true;
                 loopCPG:
                 while (flag) {
@@ -183,6 +224,7 @@ public class MajGame {
                         //判断没有没有放炮
                         List<GangRecord> mingGangRecords = validMingGang(other, buildGameInfo(players, other, currentMaj, false));
                         if (mingGangRecords.size() > 0) {
+                            mingGang = mingGangRecords.get(0).isMingGang();
                             GangRecord mingGangRecord = mingGangRecords.get(0);
                             if (mingGangRecord.isGang()) {
                                 /**
@@ -199,6 +241,10 @@ public class MajGame {
                                      * 不存在多个人都杠，所以一个人杠完就可以break
                                      */
                                     no = cno;
+                                    touchGang = true;
+                                    if (!addGang(tmpInfos.get(player.getName()).getPlayerNo())) {
+                                        return;
+                                    }
                                     continue loopTouch;
                                 }
 
@@ -383,7 +429,7 @@ public class MajGame {
         return tableInfoHandler.calZiFeng(gameTmp.getPlayerNo(), dealer);
     }
 
-    private void record(Player<Maj, MajGroup> winner, List<Player<Maj, MajGroup>> loser, GameInfo gameInfo, HuRecord record) {
+    private void record(GameSettleAccount settleAccount) {
 
     }
 
@@ -406,6 +452,8 @@ public class MajGame {
                         if (sumFan > sumFan(max.getFans())) {
                             max = huRecord;
                         }
+                    } else {
+                        max = huRecord;
                     }
                 } else {
                     if (!max.isYiMan()) {

@@ -18,7 +18,7 @@ public class MajiangApp {
         User user2 = new User("2去字2", 0);
         User user3 = new User("3去字3", 0);
         User user4 = new User("4一色4", 0);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 10; i++) {
             new Thread(() -> {
                 List<Player<Maj, MajGroup>> players = new ArrayList<>();
                 players.add(new RemoveZiPlayer(user1, new MajSort()));
