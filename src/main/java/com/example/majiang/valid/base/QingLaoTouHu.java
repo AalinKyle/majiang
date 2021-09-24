@@ -15,11 +15,14 @@ public class QingLaoTouHu implements HuValid {
         int[] tong = hmd.getTong();
         int[] zi = hmd.getZi();
         for (int i = 1; i < wan.length - 1; i++) {
-            if (wan[i] > 0 || tong[i] > 0 || suo[i] > 0 || zi[i] > 0) {
+            if (wan[i] > 0 || tong[i] > 0 || suo[i] > 0) {
                 return null;
             }
         }
-        for (MajGroup majGroup : list) {
+        if (!allSame(zi, 0)) {
+            return null;
+        }
+        for (MajGroup majGroup : show) {
             List<GroupMaj> majs = majGroup.getMajs();
             for (Maj m : majs) {
                 if (m.getType() == Maj.ZI) {

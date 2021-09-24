@@ -13,14 +13,14 @@ public class MajTable {
      */
     public void deal() {
         for (int i = 0; i < 3; i++) {
-            for (Player<Maj,MajGroup> player : players) {
+            for (Player<Maj, MajGroup> player : players) {
                 for (int j = 0; j < 4; j++) {
                     player.touch(touch());
                 }
             }
         }
-        for (Player<Maj,MajGroup> player : players) {
-                player.touch(touch());
+        for (Player<Maj, MajGroup> player : players) {
+            player.touch(touch());
         }
     }
 
@@ -30,7 +30,7 @@ public class MajTable {
     private List<Player<Maj, MajGroup>> players;
     private Maj current;
 
-    public void addPlayer(Player<Maj,MajGroup> player) {
+    public void addPlayer(Player<Maj, MajGroup> player) {
         players.add(player);
     }
 
@@ -67,8 +67,9 @@ public class MajTable {
             throw new NullPointerException("pool is empty");
         }
     }
+
     public boolean canTouch() {
-       return pool.size() > 10;
+        return pool.size() > 10;
     }
 
 

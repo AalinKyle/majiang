@@ -13,6 +13,9 @@ public class SiGangZiHu implements HuValid {
     @Override
     public Fan valid(HandMajDistribution hmd, List<MajGroup> show, List<Maj> discard, List<MajGroup> list, GameInfo gameInfo) {
         ShowEswnzfbx eswnzfbx = parseShow(show);
-        return eswnzfbx.getGangNum() == 4 ? Fan.SI_GANG_ZI : null;
+        if (eswnzfbx.getGangNum() == 4) {
+            return Fan.SI_GANG_ZI;
+        }
+        return null;
     }
 }

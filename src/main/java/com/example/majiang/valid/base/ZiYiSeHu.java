@@ -5,6 +5,7 @@ import com.example.majiang.valid.Hu;
 import com.example.majiang.valid.HuValid;
 
 import java.util.List;
+
 @Hu
 public class ZiYiSeHu implements HuValid {
     @Override
@@ -13,7 +14,7 @@ public class ZiYiSeHu implements HuValid {
         int[] suo = hmd.getSuo();
         int[] tong = hmd.getTong();
         ShowEswnzfbx eswnzfbx = parseShow(show);
-        boolean haveZi = eswnzfbx.onlyHave(3);
+        boolean haveZi = eswnzfbx.onlyHave(Maj.ZI, true);
         return haveZi && sum(wan) == 0 && sum(suo) == 0 && sum(tong) == 0 ? Fan.ZI_YI_SE : null;
     }
 }

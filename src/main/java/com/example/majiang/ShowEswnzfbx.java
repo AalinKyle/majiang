@@ -40,8 +40,10 @@ public class ShowEswnzfbx {
     private int fengMingGang;
     private int yiMingGang;
 
-    public boolean onlyHave(int type) {
-        if (groupNum == 0) return false;
+    public boolean onlyHave(int type, boolean containZero) {
+        if (!containZero && groupNum == 0) {
+            return false;
+        }
         switch (type) {
             case Maj.WAN: {
                 //万
@@ -161,7 +163,7 @@ public class ShowEswnzfbx {
                         }
                         if (maj.getType() == Maj.ZI) {
                             if (maj.getContent() <= 3) {
-                                fengMingGang++;
+                                fengMingKe++;
                             } else {
                                 yiMingKe++;
                             }

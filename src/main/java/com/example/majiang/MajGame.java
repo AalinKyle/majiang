@@ -358,8 +358,17 @@ public class MajGame {
 
     private int sumFan(List<Fan> list) {
         int sum = 0;
+        boolean isYiMan = false;
         for (Fan fan : list) {
-            sum += fan.getNum();
+            if (fan.isYiMan()) {
+                if (!isYiMan) {
+                    sum = 0;
+                }
+                isYiMan = true;
+            }
+            if ((isYiMan && fan.isYiMan()) || !isYiMan) {
+                sum += fan.getNum();
+            }
         }
         return sum;
     }
@@ -392,7 +401,7 @@ public class MajGame {
             } else {
                 List<Fan> fans = huRecord.getFans();
                 int sumFan = sumFan(fans);
-                if (fans.get(0).isYiMan()) {
+                if (huRecord.isYiMan()) {
                     if (max.isYiMan()) {
                         if (sumFan > sumFan(max.getFans())) {
                             max = huRecord;

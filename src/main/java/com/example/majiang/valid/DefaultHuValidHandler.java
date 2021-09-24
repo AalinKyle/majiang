@@ -51,7 +51,9 @@ public class DefaultHuValidHandler implements HuValidHandler {
                 for (HuValid v : huValids) {
                     distribution = new HandMajDistribution(majs);
                     Fan fan = v.valid(distribution, show, discard, preValidRes.getHandMajGroups(), gameInfo);
-                    fans.add(fan);
+                    if (fan != null) {
+                        fans.add(fan);
+                    }
                 }
             }
         }
@@ -60,26 +62,24 @@ public class DefaultHuValidHandler implements HuValidHandler {
         List<Fan> resFans = new ArrayList<>();
         for (int i = 0; i < fans.size(); i++) {
             Fan fan = fans.get(i);
-            if (fan != null) {
-                if (fan.isCanHu()) {
-                    hu = true;
+            if (fan.isCanHu()) {
+                hu = true;
+            }
+            /**
+             * 当胡的牌出现役满牌型，就不要计算其他的小胡了，只统计役满
+             */
+            if (fan.isYiMan()) {
+                if (!isYiMan) {
+                    resFans.clear();
                 }
-                /**
-                 * 当胡的牌出现役满牌型，就不要计算其他的小胡了，只统计役满
-                 */
+                isYiMan = true;
+            }
+            if (isYiMan) {
                 if (fan.isYiMan()) {
-                    if (!isYiMan) {
-                        fans.clear();
-                    }
-                    isYiMan = true;
-                }
-                if (isYiMan) {
-                    if (fan.isYiMan()) {
-                        resFans.add(fan);
-                    }
-                } else {
                     resFans.add(fan);
                 }
+            } else {
+                resFans.add(fan);
             }
         }
         if (fans.size() > 0) {

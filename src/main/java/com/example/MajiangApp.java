@@ -14,16 +14,16 @@ import java.util.List;
 public class MajiangApp {
 
     public static void main(String[] args) {
-        User user1 = new User("1一色1", 0);
-        User user2 = new User("2一色2", 0);
-        User user3 = new User("3一色3", 0);
+        User user1 = new User("1去字1", 0);
+        User user2 = new User("2去字2", 0);
+        User user3 = new User("3去字3", 0);
         User user4 = new User("4一色4", 0);
         for (int i = 0; i < 6; i++) {
             new Thread(() -> {
                 List<Player<Maj, MajGroup>> players = new ArrayList<>();
-                players.add(new YiSePlayer(user1, new MajSort()));
-                players.add(new YiSePlayer(user2, new MajSort()));
-                players.add(new YiSePlayer(user3, new MajSort()));
+                players.add(new RemoveZiPlayer(user1, new MajSort()));
+                players.add(new RemoveZiPlayer(user2, new MajSort()));
+                players.add(new RemoveZiPlayer(user3, new MajSort()));
                 players.add(new YiSePlayer(user4, new MajSort()));
                 MajGame game = new MajGame(new MyHus());
                 while (true) {

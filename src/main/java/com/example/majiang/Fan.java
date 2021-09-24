@@ -28,7 +28,7 @@ public class Fan {
     public final static Fan DA_SI_XI = new Fan(2, "大四喜", true);
     public final static Fan XIAO_SI_XI = new Fan(1, "小四喜", true);
     public final static Fan DA_SAN_YUAN = new Fan(1, "大三元", true);
-    public final static Fan XIAO_SAN_YUAN = new Fan(3, "小三元");
+    public final static Fan XIAO_SAN_YUAN = new Fan(2, "小三元");
     public final static Fan SI_GANG_ZI = new Fan(1, "四杠子", true);
     public final static Fan QING_LIAN_BAO_ZHU = new Fan(1, "青莲宝珠", true);
     private int num;

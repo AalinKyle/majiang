@@ -15,14 +15,15 @@ public class DefaultCalPointHandler implements CalPointHandler {
         int fanNum = sumFan(fans, 1000);
         get.addPoint(fanNum);
         for (int i = 0; i < all.size(); i++) {
-            Player<Maj,MajGroup> p = all.get(i);
-            if (p != get)
+            Player<Maj, MajGroup> p = all.get(i);
+            if (p != get) {
                 p.addPoint(-fanNum / 3);
+            }
         }
     }
 
     @Override
-    public void checkFangPaoPoint(Player<Maj,MajGroup> get, Player<Maj,MajGroup> lost, HuRecord record) {
+    public void checkFangPaoPoint(Player<Maj, MajGroup> get, Player<Maj, MajGroup> lost, HuRecord record) {
         List<Fan> fans = record.getFans();
         int fanNum = sumFan(fans, 1000);
         get.addPoint(fanNum);
@@ -33,7 +34,9 @@ public class DefaultCalPointHandler implements CalPointHandler {
         int sum = 0;
         boolean yiMan = false;
         for (Fan f : list) {
-            if (f.isYiMan()) yiMan = true;
+            if (f.isYiMan()) {
+                yiMan = true;
+            }
             sum += f.getNum();
         }
         return sum * beishu * (yiMan ? 36 : 1);
