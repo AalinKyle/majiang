@@ -21,4 +21,5 @@ public class GameInfo {
     private Map<Integer, PlayerTableInfo> playerTableInfos;
     private boolean zimo;
     private Maj currentMaj;
+    private boolean isDealer;
 }

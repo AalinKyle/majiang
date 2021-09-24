@@ -1,7 +1,10 @@
 package com.example.majiang.valid;
 
-import com.example.majiang.*;
-import com.example.majiang.p.Player;
+import com.example.majiang.GameInfo;
+import com.example.majiang.GroupMaj;
+import com.example.majiang.Maj;
+import com.example.majiang.MajGroup;
+import com.example.majiang.p.BasePlayer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +25,7 @@ public class ShowMingGangValidHandler extends BaseGangValidHandler {
     }
 
     @Override
-    public GangRecord validGang(Player<Maj, MajGroup> player, GameInfo gameInfo) {
+    public GangRecord validGang(BasePlayer player, GameInfo gameInfo) {
         Maj current = gameInfo.getCurrentMaj();
         List<MajGroup> show = player.getShow();
         MajGroup majGroup = new MajGroup(MajGroup.MING_KE, Arrays.asList(new GroupMaj(current), new GroupMaj(current), new GroupMaj(current)));

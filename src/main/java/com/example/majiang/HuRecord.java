@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -13,11 +12,10 @@ import java.util.List;
 public class HuRecord {
     private boolean yiMan;
     private boolean hu;
-    private Date huTime;
     private List<Fan> fans;
     private HuMaj huMaj;
-    private int fu;
 
-    private int changFeng;
-    private int ziFeng;
+    private PointInterface dealer;
+    private PointInterface winner;
+    private List<PointInterface> loser;
 }

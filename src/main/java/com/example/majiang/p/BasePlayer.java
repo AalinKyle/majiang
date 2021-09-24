@@ -20,7 +20,7 @@ import java.util.Random;
 /**
  * @author kyle
  * */
-public class BasePlayer implements Player<Maj, MajGroup> {
+public class BasePlayer implements Player<Maj, MajGroup>, PointInterface {
     protected User user;
 
     @Override

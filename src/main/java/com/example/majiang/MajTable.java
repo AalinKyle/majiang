@@ -1,9 +1,11 @@
 package com.example.majiang;
 
-import com.example.majiang.p.Player;
+import com.example.majiang.p.BasePlayer;
 import lombok.Data;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 public class MajTable {
@@ -13,13 +15,13 @@ public class MajTable {
      */
     public void deal() {
         for (int i = 0; i < 3; i++) {
-            for (Player<Maj, MajGroup> player : players) {
+            for (BasePlayer player : players) {
                 for (int j = 0; j < 4; j++) {
                     player.touch(touch());
                 }
             }
         }
-        for (Player<Maj, MajGroup> player : players) {
+        for (BasePlayer player : players) {
             player.touch(touch());
         }
     }
@@ -34,17 +36,17 @@ public class MajTable {
     private List<Maj> gangs = new ArrayList<>(4);
     private List<Maj> baoPais = new ArrayList<>(5);
     private List<Maj> liBaoPais = new ArrayList<>(5);
-    private List<Player<Maj, MajGroup>> players;
+    private List<BasePlayer> players;
     private Maj current;
 
     private int baopaiIndex = 0;
     private int gangIndex = 0;
 
-    public void addPlayer(Player<Maj, MajGroup> player) {
+    public void addPlayer(BasePlayer player) {
         players.add(player);
     }
 
-    public void addPlayers(List<Player<Maj, MajGroup>> players) {
+    public void addPlayers(List<BasePlayer> players) {
         this.players.addAll(players);
     }
 

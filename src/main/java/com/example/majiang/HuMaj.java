@@ -14,6 +14,8 @@ public class HuMaj {
     private List<MajGroup> show;
     private List<Maj> discard;
     private Maj currentMaj;
+    private GameInfo gameInfo;
+    private List<MajGroup> handMajGroup;
 
     @Override
     public String toString() {

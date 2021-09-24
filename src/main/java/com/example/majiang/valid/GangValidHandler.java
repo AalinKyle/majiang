@@ -1,9 +1,7 @@
 package com.example.majiang.valid;
 
 import com.example.majiang.GameInfo;
-import com.example.majiang.Maj;
-import com.example.majiang.MajGroup;
-import com.example.majiang.p.Player;
+import com.example.majiang.p.BasePlayer;
 
 /**
  * @Author kyle
@@ -11,6 +9,6 @@ import com.example.majiang.p.Player;
  */
 public interface GangValidHandler {
 
-    GangRecord validGang(Player<Maj, MajGroup> playe, GameInfo gameInfo);
+    GangRecord validGang(BasePlayer playe, GameInfo gameInfo);
 
 }

@@ -12,7 +12,7 @@ import java.util.List;
  * @param <U>
  * @author kyle
  */
-public interface Player<T extends Maj, U extends MajGroup> extends MajStrategy<T> {
+public interface Player<T extends Maj, U extends MajGroup> extends MajStrategy<T>{
     /**
      * 获取id
      *
@@ -34,12 +34,6 @@ public interface Player<T extends Maj, U extends MajGroup> extends MajStrategy<T
      */
     public List<T> getDiscard();
 
-    /**
-     * 增减分数
-     *
-     * @param n
-     */
-    public void addPoint(int n);
 
     /**
      * 增加副露

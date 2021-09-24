@@ -4,7 +4,7 @@ import com.example.majiang.GameInfo;
 import com.example.majiang.HandMajDistribution;
 import com.example.majiang.Maj;
 import com.example.majiang.MajGroup;
-import com.example.majiang.p.Player;
+import com.example.majiang.p.BasePlayer;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 public class AnGangValidHandler extends BaseGangValidHandler {
 
     @Override
-    public GangRecord validGang(Player<Maj, MajGroup> player, GameInfo gameInfo) {
+    public GangRecord validGang(BasePlayer player, GameInfo gameInfo) {
         List<Maj> hand = player.getHand();
         HandMajDistribution hmd = new HandMajDistribution(hand);
         Maj current = gameInfo.getCurrentMaj();

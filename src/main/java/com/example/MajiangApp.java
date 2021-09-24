@@ -18,16 +18,17 @@ public class MajiangApp {
         User user2 = new User("2去字2", 0);
         User user3 = new User("3去字3", 0);
         User user4 = new User("4一色4", 0);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 4; i++) {
             new Thread(() -> {
-                List<Player<Maj, MajGroup>> players = new ArrayList<>();
+                List<BasePlayer> players = new ArrayList<>();
                 players.add(new RemoveZiPlayer(user1, new MajSort()));
                 players.add(new RemoveZiPlayer(user2, new MajSort()));
                 players.add(new RemoveZiPlayer(user3, new MajSort()));
                 players.add(new YiSePlayer(user4, new MajSort()));
                 MajGame game = new MajGame(new MyHus());
+                game.setPlayers(players);
                 while (true) {
-                    game.play(players);
+                    game.play();
                     game.clear();
                 }
             }).start();
@@ -35,7 +36,7 @@ public class MajiangApp {
         new Thread(new UserPointMonitor(Arrays.asList(user1, user2, user3, user4))).start();
     }
 
-    private static Player<Maj, MajGroup> buildPlayer(User user) {
+    private static BasePlayer buildPlayer(User user) {
         return new BasePlayer(user, new MajSort());
     }
 }

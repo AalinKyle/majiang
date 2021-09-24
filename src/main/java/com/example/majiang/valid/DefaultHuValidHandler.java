@@ -42,15 +42,18 @@ public class DefaultHuValidHandler implements HuValidHandler {
     @Override
     public HuRecord validFan(List<Maj> majs, List<MajGroup> show, List<Maj> discard, GameInfo gameInfo) {
         List<Fan> fans = new ArrayList<>();
-
+        List<MajGroup> handMajGroup = null;
         for (PreHuValid preHuValid : valids.keySet()) {
             HandMajDistribution distribution = new HandMajDistribution(majs);
             List<HuValid> huValids = valids.get(preHuValid);
             PreValidRes preValidRes = preHuValid.valid0(distribution, show, discard, gameInfo);
             if (preValidRes != null && preValidRes.isValid()) {
+                List<MajGroup> handMajGroups = preValidRes.getHandMajGroups();
+                handMajGroup = handMajGroups;
                 for (HuValid v : huValids) {
                     distribution = new HandMajDistribution(majs);
-                    Fan fan = v.valid(distribution, show, discard, preValidRes.getHandMajGroups(), gameInfo);
+
+                    Fan fan = v.valid(distribution, show, discard, handMajGroups, gameInfo);
                     if (fan != null) {
                         fans.add(fan);
                     }
@@ -82,8 +85,13 @@ public class DefaultHuValidHandler implements HuValidHandler {
                 resFans.add(fan);
             }
         }
+        HuMaj huMaj = new HuMaj(majs, show, discard, gameInfo.getCurrentMaj(), gameInfo, handMajGroup);
         if (fans.size() > 0) {
-            return new HuRecord().setYiMan(isYiMan).setHu(hu).setHuTime(new Date()).setFans(resFans).setZiFeng(gameInfo.getZiFeng()).setChangFeng(gameInfo.getChangFeng()).setHuMaj(new HuMaj(majs, show, discard, gameInfo.getCurrentMaj()));
+            return new HuRecord()
+                    .setYiMan(isYiMan)
+                    .setHu(hu)
+                    .setFans(resFans)
+                    .setHuMaj(huMaj);
         } else {
             return null;
         }

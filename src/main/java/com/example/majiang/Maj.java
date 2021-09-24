@@ -55,4 +55,14 @@ public class Maj {
     public int hashCode() {
         return Objects.hash(type, content);
     }
+
+
+    public boolean isYi() {
+        if (getType() != Maj.ZI) {
+            return false;
+        } else {
+            int content = getContent();
+            return content == ZI_BAI || content == ZI_FA || content == ZI_ZHONG;
+        }
+    }
 }
