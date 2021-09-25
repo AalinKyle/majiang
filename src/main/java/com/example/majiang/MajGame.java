@@ -161,7 +161,7 @@ public class MajGame {
                 player.touch(currentMaj);
                 //判断有没有自摸
                 /**
-                 *摸牌时的game info
+                 *摸牌时的game info xxx
                  */
                 GameInfo touchGameInfo = buildGameInfo(player, currentMaj, true);
                 HuRecord zimohuRecord = validFan(player, touchGameInfo);
