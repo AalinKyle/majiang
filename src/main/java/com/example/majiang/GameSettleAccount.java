@@ -21,6 +21,12 @@ public class GameSettleAccount {
         int LIU_JU_SIFENG = 4;
     }
 
+    public interface Type {
+        int NO_HU = 0;
+        int ZI_MO = 1;
+        int FANG_PAO = 2;
+    }
+
     private int changFeng;
     /**
      * 庄家
@@ -36,6 +42,7 @@ public class GameSettleAccount {
      * 自摸，放炮
      */
     private int winType;
+    private int roundNum;
     private Map<Integer, BasePlayer> noMap;
     private List<WinnerRecord> winnerRecords;
     private List<Maj> pool;

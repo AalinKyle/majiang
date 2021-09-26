@@ -110,6 +110,14 @@ public class MajTable {
         }
     }
 
+    public List<Maj> returnBaoPais() {
+        List<Maj> lis = new ArrayList<>();
+        for (int i = 0; i < baopaiIndex; i++) {
+            lis.add(baoPais.get(i));
+        }
+        return lis;
+    }
+
     public List<Maj> returnLiBaoPais() {
         List<Maj> lis = new ArrayList<>();
         for (int i = 0; i < baopaiIndex; i++) {

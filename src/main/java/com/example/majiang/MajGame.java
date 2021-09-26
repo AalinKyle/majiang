@@ -10,7 +10,6 @@ import com.example.majiang.point.CalPointHandler;
 import com.example.majiang.point.DefaultCalPointHandler;
 import com.example.majiang.rec.DefaultRecordHandler;
 import com.example.majiang.rec.RecordHandler;
-import com.example.majiang.utils.FanUtils;
 import com.example.majiang.valid.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -134,20 +133,24 @@ public class MajGame {
         }
     }
 
-    private GameSettleAccount buildGameSettleAccount(int result, List<WinnerRecord> winnerRecords) {
+    private GameSettleAccount buildGameSettleAccount(int result, int roundNum, Integer winType, List<WinnerRecord> winnerRecords) {
         GameSettleAccount settleAccount = new GameSettleAccount();
         settleAccount.setChangFeng(changFen);
         settleAccount.setDealer(dealer);
         settleAccount.setNoMap(noMap);
         settleAccount.setRecordTime(new Date());
         settleAccount.setResult(result);
+        settleAccount.setWinType(winType);
+        settleAccount.setBaoPais(table.returnBaoPais());
+        settleAccount.setLiBaoPais(table.returnLiBaoPais());
         settleAccount.setWinnerRecords(winnerRecords);
+        settleAccount.setRoundNum(roundNum);
         return settleAccount;
     }
 
-    private WinnerRecord buildWinnerRecords(int type, HuRecord hu, String winner, List<String> loser) {
+    private WinnerRecord buildWinnerRecords(HuRecord hu, String winner, List<String> loser) {
         WinnerRecord.WinnerRecordBuilder builder = WinnerRecord.builder();
-        builder.type(type).record(hu).winnerName(winner).loserNames(loser);
+        builder.record(hu).winnerName(winner).loserNames(loser);
         return builder.build();
     }
 
@@ -159,11 +162,12 @@ public class MajGame {
             throw new RuntimeException("player num error");
         }
         GameSettleAccount settleAccount = null;
+        int roundNum = 0;
         try {
             prePlay(players);
             int no = dealer;
             Maj currentMaj;
-            int roundNum = 0;
+
             List<Integer> winnerNo = new ArrayList<>();
             BasePlayer player;
             /**
@@ -194,14 +198,13 @@ public class MajGame {
                 HuRecord zimohuRecord = validFan(player, touchGameInfo);
                 if (zimohuRecord != null && zimohuRecord.isHu()) {
                     if (player.chooseHu(zimohuRecord, touchGameInfo)) {
-                        log.info("第{}局,场风{}庄家{},宝牌{},{}手,#{}# 自摸胡=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, player.getName(), zimohuRecord.getHuMaj(), buildFanString(zimohuRecord.getFans()));
                         //算自摸分
                         List<PointInterface> collect = players.stream().map(p -> (PointInterface) p).collect(Collectors.toList());
                         pointHandler.checkZiMoPoint(player, collect, zimohuRecord);
                         winnerNo.add(tmpInfos.get(player.getName()).getPlayerNo());
                         //记录
-                        settleAccount = buildGameSettleAccount(GameSettleAccount.Result.HU,
-                                Arrays.asList(buildWinnerRecords(WinnerRecord.Type.ZI_MO, zimohuRecord, player.getName(), getLoserName(player))));
+                        settleAccount = buildGameSettleAccount(GameSettleAccount.Result.HU, roundNum, GameSettleAccount.Type.ZI_MO,
+                                Arrays.asList(buildWinnerRecords(zimohuRecord, player.getName(), getLoserName(player))));
                         /**
                          * 自摸不存在一炮多响
                          */
@@ -221,7 +224,7 @@ public class MajGame {
                          * 暗杠直接开一张宝牌
                          */
                         if (!addGang(tmpInfos.get(player.getName()).getPlayerNo())) {
-                            settleAccount = buildGameSettleAccount(GameSettleAccount.Result.LIU_JU_SIGANG, null);
+                            settleAccount = buildGameSettleAccount(GameSettleAccount.Result.LIU_JU_SIGANG, roundNum, GameSettleAccount.Type.NO_HU, null);
                             return;
                         }
                         if (!mingGang) {
@@ -255,12 +258,11 @@ public class MajGame {
                         HuRecord fangpaohuRecord = validFan(other, currentMaj, buildGameInfo(other, currentMaj, false));
                         if (fangpaohuRecord != null && fangpaohuRecord.isHu()) {
                             if (other.chooseHu(fangpaohuRecord, buildGameInfo(other, currentMaj, false))) {
-                                log.info("第{}局,场风{}庄家{},宝牌{},{}手,#{}# 胡 #{}# 放炮=>{},番数:{}", gameNum.get(), Maj.zi[changFen], players.get(dealer).getName(), baoPaiHandler.getBaoPais(), roundNum, other.getName(), player.getName(), fangpaohuRecord.getHuMaj(), buildFanString(fangpaohuRecord.getFans()));
                                 //算放炮分
                                 pointHandler.checkFangPaoPoint(other, player, fangpaohuRecord);
                                 //记录
                                 winnerNo.add(tmpInfos.get(other.getName()).getPlayerNo());
-                                winnerRecords.add(buildWinnerRecords(WinnerRecord.Type.FANG_PAO, fangpaohuRecord, player.getName(), Arrays.asList(playplayer.getName())));
+                                winnerRecords.add(buildWinnerRecords(fangpaohuRecord, player.getName(), Arrays.asList(playplayer.getName())));
                                 /**
                                  * 可能一炮多响，要把其他玩家都判断了。
                                  */
@@ -270,7 +272,7 @@ public class MajGame {
                         }
                     }
                     if (over) {
-                        settleAccount = buildGameSettleAccount(GameSettleAccount.Result.HU, winnerRecords);
+                        settleAccount = buildGameSettleAccount(GameSettleAccount.Result.HU, roundNum, GameSettleAccount.Type.FANG_PAO, winnerRecords);
                         break;
                     }
                     /**
@@ -298,7 +300,7 @@ public class MajGame {
                                     no = cno;
                                     touchGang = true;
                                     if (!addGang(tmpInfos.get(player.getName()).getPlayerNo())) {
-                                        settleAccount = buildGameSettleAccount(GameSettleAccount.Result.LIU_JU_SIGANG, null);
+                                        settleAccount = buildGameSettleAccount(GameSettleAccount.Result.LIU_JU_SIGANG, roundNum, GameSettleAccount.Type.NO_HU, null);
                                         return;
                                     }
                                     continue loopTouch;
@@ -356,7 +358,7 @@ public class MajGame {
             changeDealer(winnerNo, players);
         } finally {
             if (settleAccount == null) {
-                settleAccount = buildGameSettleAccount(GameSettleAccount.Result.LIU_JU_HUANGPAI, null);
+                settleAccount = buildGameSettleAccount(GameSettleAccount.Result.LIU_JU_HUANGPAI, roundNum, GameSettleAccount.Type.NO_HU, null);
             }
             record(settleAccount);
             //所有player清空牌
@@ -428,48 +430,6 @@ public class MajGame {
     //----------------------------------------------------------------------------------------------------------------------------------//
 
 
-    private String buildFanString(List<Fan> fans) {
-        StringBuilder sb = new StringBuilder();
-        Map<String, Integer> map = buildMap(fans);
-        if (fans.size() > 0) {
-            if (fans.get(0).isYiMan()) {
-                sb.append(sumFan(fans)).append("倍役满");
-            } else {
-                sb.append("共").append(sumFan(fans)).append("番");
-            }
-            sb.append(",");
-            for (Fan fan : fans) {
-                int prefixNum = 1;
-                String type = fan.getType();
-                Integer num = map.get(type);
-                if (num > 1) {
-                    prefixNum *= num;
-                }
-                if (fan.isSingle()) {
-                    prefixNum *= (fan.getNum());
-                }
-                if (prefixNum > 1) {
-                    sb.append(prefixNum);
-                }
-                sb.append(fan.getType());
-                sb.append(" ");
-            }
-        }
-        return sb.toString();
-    }
-
-    private Map<String, Integer> buildMap(List<Fan> list) {
-        Map<String, Integer> map = new HashMap<>(list.size());
-        for (Fan f : list) {
-            String type = f.getType();
-            map.put(type, map.getOrDefault(type, 0) + 1);
-        }
-        return map;
-    }
-
-    private int sumFan(List<Fan> list) {
-        return FanUtils.sumFan(list);
-    }
     //----------------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -497,7 +457,7 @@ public class MajGame {
     }
 
     /**
-     * 自摸
+     * 放炮
      *
      * @param player
      * @return

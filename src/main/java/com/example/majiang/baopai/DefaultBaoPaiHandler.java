@@ -6,13 +6,18 @@ import com.example.majiang.MajTable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author kyle
+ */
 public class DefaultBaoPaiHandler implements BaoPaiHandler {
     private List<Maj> baoPai;
     private MajTable table;
+    private List<Maj> liBaoPais;
 
     @Override
     public void init(MajTable table) {
         this.baoPai = new ArrayList<>();
+        this.liBaoPais = new ArrayList<>();
         this.table = table;
     }
 
@@ -32,9 +37,9 @@ public class DefaultBaoPaiHandler implements BaoPaiHandler {
         int type = touch.getType();
         int content = touch.getContent();
         if (type == Maj.ZI) {
-            return new Maj(type, (content + 1) % 7);
+            return new Maj(type, (content + 1) % Maj.zi.length);
         } else {
-            return new Maj(type, (content + 1) % 9);
+            return new Maj(type, (content + 1) % Maj.contents.length);
         }
     }
 
