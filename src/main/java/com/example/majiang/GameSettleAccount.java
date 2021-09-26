@@ -1,9 +1,11 @@
 package com.example.majiang;
 
+import com.example.majiang.p.BasePlayer;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author kyle
@@ -11,18 +13,30 @@ import java.util.List;
  */
 @Data
 public class GameSettleAccount {
+
+    public interface Result {
+        int HU = 1;
+        int LIU_JU_HUANGPAI = 2;
+        int LIU_JU_SIGANG = 3;
+        int LIU_JU_SIFENG = 4;
+    }
+
     private int changFeng;
-    private int ziFeng;
-    private Date huTime;
+    /**
+     * 庄家
+     */
+    private int dealer;
+    private Date recordTime;
     /**
      * 结果
-     * 胡/荒牌流局/...
+     * 胡/流局(荒牌/四杠/四风...)/...
      */
     private int result;
     /**
      * 自摸，放炮
      */
     private int winType;
+    private Map<Integer, BasePlayer> noMap;
     private List<WinnerRecord> winnerRecords;
     private List<Maj> pool;
     private List<Maj> baoPais;

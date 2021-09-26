@@ -25,11 +25,7 @@ public class BasePreHuValid implements PreHuValid {
         int[] suo = hmd.getSuo();
         int[] tong = hmd.getTong();
         int[] zi = hmd.getZi();
-        int[] cw = copy(wan);
-        int[] ct = copy(tong);
-        int[] cs = copy(suo);
-        int[] cz = copy(zi);
-        return new PreValidRes(baseHu(cw, ct, cs, cz, show, discard, list, gameInfo), list);
+        return new PreValidRes(baseHu(wan, suo, tong, zi, show, discard, list, gameInfo), list);
     }
 
     private int[] copy(int[] arr) {

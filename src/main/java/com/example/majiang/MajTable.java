@@ -1,5 +1,7 @@
 package com.example.majiang;
 
+import com.example.majiang.ex.NoPlayersException;
+import com.example.majiang.ex.PoolIsEmptyException;
 import com.example.majiang.p.BasePlayer;
 import lombok.Data;
 
@@ -7,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author kyle
+ */
 @Data
 public class MajTable {
 
@@ -14,6 +19,12 @@ public class MajTable {
      * 发牌
      */
     public void deal() {
+        if (players.size() == 0) {
+            throw new NoPlayersException();
+        }
+        /**
+         * 每人先摸三组
+         */
         for (int i = 0; i < 3; i++) {
             for (BasePlayer player : players) {
                 for (int j = 0; j < 4; j++) {
@@ -26,7 +37,7 @@ public class MajTable {
         }
     }
 
-
+    private MajsCase majsCase = new DefaultMajsCase();
     private List<Maj> pool = new ArrayList<>(136);
     private int canTouch = 122;
     private int baoPaiNum = 5;
@@ -37,7 +48,6 @@ public class MajTable {
     private List<Maj> baoPais = new ArrayList<>(5);
     private List<Maj> liBaoPais = new ArrayList<>(5);
     private List<BasePlayer> players;
-    private Maj current;
 
     private int baopaiIndex = 0;
     private int gangIndex = 0;
@@ -78,27 +88,17 @@ public class MajTable {
         init();
     }
 
-    private int singleNum = 4;
 
     private void init() {
         players = new ArrayList<>();
-        for (int i = 0; i < singleNum; i++) {
-            for (int j = 0; j < Maj.contents.length; j++) {
-                pool.add(new Maj(Maj.WAN, j));
-                pool.add(new Maj(Maj.TONG, j));
-                pool.add(new Maj(Maj.SUO, j));
-            }
-            for (int j = 0; j < Maj.zi.length; j++) {
-                pool.add(new Maj(Maj.ZI, j));
-            }
-        }
+        pool.addAll(majsCase.getMajs());
     }
 
     public Maj touchBaoPai() {
         if (baopaiIndex < baoPais.size()) {
             return baoPais.get(baopaiIndex++);
         } else {
-            throw new NullPointerException("baopai pool is empty");
+            throw new PoolIsEmptyException("baopai pool is empty");
         }
     }
 
@@ -106,7 +106,7 @@ public class MajTable {
         if (gangIndex < gangs.size()) {
             return gangs.get(gangIndex++);
         } else {
-            throw new NullPointerException("gangs pool is empty");
+            throw new PoolIsEmptyException("gangs pool is empty");
         }
     }
 
@@ -122,7 +122,7 @@ public class MajTable {
         if (canTouch()) {
             return canTouchPool.remove(0);
         } else {
-            throw new NullPointerException("pool is empty");
+            throw new PoolIsEmptyException("pool is empty");
         }
     }
 
